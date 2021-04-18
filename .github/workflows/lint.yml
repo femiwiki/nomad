@@ -3,9 +3,27 @@ name: Lint
 on: [push, pull_request]
 
 jobs:
-  fmt:
+  tf-fmt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Format
         run: terraform -chdir=terraform fmt -check -diff -recursive
+
+  hcl-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install hclfmt
+        run: go get -u github.com/hashicorp/hcl/v2/cmd/hclfmt
+
+      - name: Run hclfmt
+        run: |
+          for f in **/*.{nomad,hcl}; do
+            hclfmt \
+              -check \
+              -require-no-change \
+              -w \
+              "$f"
+          done
