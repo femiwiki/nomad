@@ -13,12 +13,12 @@ job "fastcgi" {
       driver = "exec"
       config {
         command = "sh"
-        args    = [
+        args = [
           "-c",
-          join( ";", [
+          join(";", [
             "while ! ncat --send-only 127.0.0.1 3306 < /dev/null; do sleep 1; done",
             "while ! ncat --send-only 127.0.0.1 11211 < /dev/null; do sleep 1; done"
-          ] )
+          ])
         ]
       }
     }

@@ -6,7 +6,7 @@ job "memcached" {
       driver = "docker"
 
       config {
-        image = "memcached:1.6.9-alpine"
+        image             = "memcached:1.6.9-alpine"
         memory_hard_limit = 240
       }
 

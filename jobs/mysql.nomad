@@ -14,7 +14,7 @@ job "mysql" {
       config {
         image   = "mysql:8.0.23"
         volumes = ["local/custom.cnf:/etc/mysql/conf.d/custom.cnf"]
-        args    = [
+        args = [
           "--default-authentication-plugin=mysql_native_password",
           "--datadir", "/srv/mysql"
         ]
