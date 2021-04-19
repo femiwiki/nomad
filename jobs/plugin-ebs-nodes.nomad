@@ -43,4 +43,15 @@ job "plugin-ebs-nodes" {
       }
     }
   }
+
+  reschedule {
+    attempts  = 3
+    interval  = "24h"
+    delay     = "10s"
+    unlimited = false
+  }
+
+  update {
+    auto_revert = true
+  }
 }
