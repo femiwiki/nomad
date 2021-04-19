@@ -12,7 +12,7 @@ job "backupbot" {
       driver = "docker"
 
       config {
-        image             = "ghcr.io/femiwiki/backupbot:2021-04-02T01-01-9103fae5"
+        image             = "ghcr.io/femiwiki/backupbot:2021-04-17T09-31-5ce8638c"
         network_mode      = "host"
         memory_hard_limit = 600
       }

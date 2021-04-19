@@ -6,7 +6,7 @@ job "mathoid" {
       driver = "docker"
 
       config {
-        image             = "ghcr.io/femiwiki/mathoid:2020-12-09T04-56-c3db867c"
+        image             = "ghcr.io/femiwiki/mathoid:2021-04-17T11-11-4e1427b4"
         memory_hard_limit = 600
       }
 

@@ -21,7 +21,7 @@ job "parsoid" {
       driver = "docker"
 
       config {
-        image             = "ghcr.io/femiwiki/parsoid:2020-12-10T14-51-f84b9d2d"
+        image             = "ghcr.io/femiwiki/parsoid:2021-04-17T11-06-0e9f9fb2"
         network_mode      = "host"
         memory_hard_limit = 400
       }

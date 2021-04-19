@@ -6,7 +6,7 @@ job "restbase" {
       driver = "docker"
 
       config {
-        image = "ghcr.io/femiwiki/restbase:2021-03-18T08-44-a48f917b"
+        image = "ghcr.io/femiwiki/restbase:2021-04-17T11-25-e5b25017"
 
         mounts = [
           {
