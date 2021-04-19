@@ -3,7 +3,7 @@ job "backupbot" {
 
   group "backupbot" {
     volume "secrets" {
-      type      = "host"
+      type      = "csi"
       source    = "secrets"
       read_only = true
     }

@@ -24,7 +24,7 @@ job "fastcgi" {
     }
 
     volume "secrets" {
-      type      = "host"
+      type      = "csi"
       source    = "secrets"
       read_only = true
     }

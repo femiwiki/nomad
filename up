@@ -6,12 +6,6 @@ set -x
 
 GIT_REPO=$(dirname "$0")
 
-# Prepare host volume mounts
-mkdir -p /srv/mysql /srv/caddycerts /srv/secrets /srv/file-cache
-if [ ! -e /srv/secrets/secret.php ]; then
-  curl -Lsfo /srv/secrets/secret.php https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/secret.php.example
-fi
-
 # Configure Nomad
 mkdir -p /opt/nomad /etc/nomad.d
 cp "${GIT_REPO}/nomad/production.hcl" /etc/nomad.d/default.hcl

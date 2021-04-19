@@ -3,7 +3,7 @@ job "mysql" {
 
   group "mysql" {
     volume "mysql" {
-      type      = "host"
+      type      = "csi"
       source    = "mysql"
       read_only = false
     }

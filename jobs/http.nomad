@@ -3,7 +3,7 @@ job "http" {
 
   group "http" {
     volume "caddycerts" {
-      type      = "host"
+      type      = "csi"
       source    = "caddycerts"
       read_only = false
     }

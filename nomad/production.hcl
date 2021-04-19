@@ -13,21 +13,6 @@ server {
 
 client {
   enabled = true
-
-  host_volume "secrets" {
-    path      = "/srv/secrets"
-    read_only = true
-  }
-
-  host_volume "mysql" {
-    path      = "/srv/mysql"
-    read_only = false
-  }
-
-  host_volume "caddycerts" {
-    path      = "/srv/caddycerts"
-    read_only = false
-  }
 }
 
 plugin "docker" {

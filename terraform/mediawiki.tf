@@ -1,4 +1,5 @@
 resource "nomad_job" "mysql" {
+  depends_on = [nomad_volume.mysql]
   detach  = false
   jobspec = file("../jobs/mysql.nomad")
 
@@ -20,6 +21,7 @@ resource "nomad_job" "memcached" {
 
 resource "nomad_job" "fastcgi" {
   depends_on = [
+    nomad_volume.secrets,
     nomad_job.mysql,
     nomad_job.memcached,
   ]
@@ -33,6 +35,7 @@ resource "nomad_job" "fastcgi" {
 }
 
 resource "nomad_job" "http" {
+  depends_on = [nomad_volume.caddycerts]
   detach  = false
   jobspec = file("../jobs/http.nomad")
 
