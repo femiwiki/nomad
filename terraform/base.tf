@@ -14,7 +14,7 @@ terraform {
     organization = "femiwiki"
 
     workspaces {
-      name = "nomad"
+      name = "nomad-arm64"
     }
   }
 
