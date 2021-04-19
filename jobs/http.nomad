@@ -12,7 +12,7 @@ job "http" {
       driver = "docker"
 
       config {
-        image   = "ghcr.io/femiwiki/mediawiki:2021-04-18t11-48-b7088927"
+        image   = "ghcr.io/femiwiki/mediawiki:2021-04-19T12-14-11fd8960"
         command = "caddy"
         args    = ["run"]
 
