@@ -1,7 +1,7 @@
 resource "nomad_job" "mysql" {
   depends_on = [nomad_volume.mysql]
-  detach  = false
-  jobspec = file("../jobs/mysql.nomad")
+  detach     = false
+  jobspec    = file("../jobs/mysql.nomad")
 
   hcl2 {
     enabled  = true
@@ -36,8 +36,8 @@ resource "nomad_job" "fastcgi" {
 
 resource "nomad_job" "http" {
   depends_on = [nomad_volume.caddycerts]
-  detach  = false
-  jobspec = file("../jobs/http.nomad")
+  detach     = false
+  jobspec    = file("../jobs/http.nomad")
 
   hcl2 {
     enabled  = true
