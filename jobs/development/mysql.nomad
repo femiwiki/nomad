@@ -6,7 +6,7 @@ job "mysql" {
       driver = "docker"
 
       config {
-        image             = "mysql:8.0"
+        image             = "mysql/mysql-server:8.0"
         args              = ["--default-authentication-plugin=mysql_native_password"]
         memory_hard_limit = 1000
       }
