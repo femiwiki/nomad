@@ -44,12 +44,8 @@ job "plugin-ebs-nodes" {
     }
   }
 
-  reschedule {
-    attempts  = 3
-    interval  = "24h"
-    delay     = "10s"
-    unlimited = false
-  }
+  # System jobs should not have a reschedule policy
+  # reschedule {}
 
   update {
     auto_revert = true
