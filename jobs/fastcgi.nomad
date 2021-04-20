@@ -24,9 +24,11 @@ job "fastcgi" {
     }
 
     volume "secrets" {
-      type      = "csi"
-      source    = "secrets"
-      read_only = true
+      type   = "csi"
+      source = "secrets"
+      // Use writable mode
+      // https://github.com/femiwiki/nomad/issues/18
+      read_only = false
     }
 
     task "fastcgi" {
@@ -61,7 +63,9 @@ job "fastcgi" {
       volume_mount {
         volume      = "secrets"
         destination = "/a"
-        read_only   = true
+        // Use writable mode
+        // https://github.com/femiwiki/nomad/issues/18
+        read_only = false
       }
 
       env {
