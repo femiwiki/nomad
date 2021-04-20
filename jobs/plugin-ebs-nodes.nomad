@@ -42,6 +42,12 @@ job "plugin-ebs-nodes" {
         memory = 20
       }
     }
+
+    restart {
+      attempts  = 3
+      interval  = "24h"
+      delay     = "10s"
+    }
   }
 
   # System jobs should not have a reschedule policy
