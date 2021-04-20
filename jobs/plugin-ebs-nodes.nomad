@@ -44,9 +44,9 @@ job "plugin-ebs-nodes" {
     }
 
     restart {
-      attempts  = 3
-      interval  = "24h"
-      delay     = "10s"
+      attempts = 3
+      interval = "24h"
+      delay    = "10s"
     }
   }
 
