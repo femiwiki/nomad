@@ -40,7 +40,7 @@ job "fastcgi" {
       }
 
       config {
-        image = "ghcr.io/femiwiki/mediawiki:2021-04-20T02-26-9a42ee4a"
+        image = "ghcr.io/femiwiki/mediawiki:2021-04-20T08-41-c3cea3e5"
 
         mounts = [
           {
