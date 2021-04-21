@@ -1,7 +1,3 @@
-variable "nomad_addr" {
-  type = string
-}
-
 variable "nomad_token" {
   type      = string
   sensitive = true
