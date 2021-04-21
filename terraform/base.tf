@@ -26,7 +26,17 @@ terraform {
   }
 }
 
+data "terraform_remote_state" "aws" {
+  backend = "remote"
+  config = {
+    organization = "femiwiki"
+    workspaces = {
+      name = "aws"
+    }
+  }
+}
+
 provider "nomad" {
-  address   = var.nomad_addr
+  address   = data.terraform_remote_state.aws.outputs.nomad_addr
   secret_id = var.nomad_token
 }
