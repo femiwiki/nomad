@@ -14,6 +14,7 @@ job "fastcgi" {
       template {
         data        = var.hotfix
         destination = "local/Hotfix.php"
+        change_mode = "noop"
       }
 
       config {
@@ -56,7 +57,7 @@ variable "hotfix" {
   type    = string
   default = <<EOF
 <?php
-// Use this file for hot fixes
+// Use this file for hotfixes
 
 // Examples:
 //
