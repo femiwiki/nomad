@@ -17,7 +17,7 @@ job "fastcgi" {
       }
 
       config {
-        image             = "ghcr.io/femiwiki/mediawiki:caddy-mwcache"
+        image             = "ghcr.io/femiwiki/mediawiki:latest"
         network_mode      = "host"
         memory_hard_limit = 600
 
@@ -57,6 +57,9 @@ variable "hotfix" {
   default = <<EOF
 <?php
 // Use this file for hot fixes
+
+$wgDebugToolbar = true;
+$wgDefaultSkin = 'vector';
 
 // Maintenance
 //// 점검이 끝나면 아래 라인 주석처리한 뒤, 아래 문서 내용을 비우면 됨
