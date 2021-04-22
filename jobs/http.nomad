@@ -22,9 +22,23 @@ job "http" {
         command = "caddy"
         args    = ["run"]
 
-        network_mode      = "host"
+        network_mode = "host"
+
+        # Mount volume into the container
+        # Reference: https://www.nomadproject.io/docs/drivers/docker#mounts
+        mounts = [
+          {
+            type     = "volume"
+            target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
+            readonly = false
+          },
+        ]
+
         memory_hard_limit = 400
 
+        # Increase max fd number
+        # https://github.com/femiwiki/docker-mediawiki/issues/467
         ulimit {
           nofile = "20000:40000"
         }

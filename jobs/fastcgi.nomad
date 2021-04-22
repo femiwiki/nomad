@@ -50,6 +50,12 @@ job "fastcgi" {
         mounts = [
           {
             type     = "volume"
+            target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
+            readonly = false
+          },
+          {
+            type     = "volume"
             target   = "/tmp/cache"
             source   = "l18n_cache"
             readonly = false
