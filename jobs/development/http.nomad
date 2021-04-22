@@ -71,6 +71,12 @@ job "http" {
             target   = "/etc/caddycerts"
             source   = "caddy"
             readonly = false
+          },
+          {
+            type     = "volume"
+            target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
+            readonly = false
           }
         ]
 

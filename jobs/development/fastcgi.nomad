@@ -45,6 +45,15 @@ job "fastcgi" {
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
           "local/Hotfix.php:/config/mediawiki/Hotfix.php"
         ]
+
+        mounts = [
+          {
+            type     = "volume"
+            target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
+            readonly = false
+          }
+        ]
       }
 
       env {
