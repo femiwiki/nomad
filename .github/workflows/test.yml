@@ -36,7 +36,8 @@ jobs:
 
       - name: Prepare configuration
         run: |
-          curl -L https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/secret.php.example -o configs/secret.php
+          curl -L https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/secret.php.example \
+            -o jobs/development/configs/secret.php
 
       - name: Run a Nomad job
         run: |
