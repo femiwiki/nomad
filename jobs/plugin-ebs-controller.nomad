@@ -17,7 +17,7 @@ job "plugin-ebs-controller" {
           "--v=5",
         ]
 
-        memory_hard_limit = 256
+        memory_hard_limit = 100
       }
 
       csi_plugin {

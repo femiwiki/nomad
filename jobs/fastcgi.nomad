@@ -63,7 +63,7 @@ job "fastcgi" {
         ]
 
         network_mode      = "host"
-        memory_hard_limit = 600
+        memory_hard_limit = 200
       }
 
       env {

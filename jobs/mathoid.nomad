@@ -7,7 +7,7 @@ job "mathoid" {
 
       config {
         image             = "ghcr.io/femiwiki/mathoid:2021-04-17T11-11-4e1427b4"
-        memory_hard_limit = 600
+        memory_hard_limit = 300
       }
 
       resources {
