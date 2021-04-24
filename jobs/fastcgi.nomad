@@ -84,7 +84,7 @@ job "fastcgi" {
         ]
 
         network_mode      = "host"
-        memory_hard_limit = 200
+        memory_hard_limit = 300
       }
 
       env {
@@ -96,10 +96,6 @@ job "fastcgi" {
         MEDIAWIKI_SKIP_INSTALL        = "1"
         MEDIAWIKI_SKIP_UPDATE         = "1"
         MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-      }
-
-      resources {
-        memory = 150
       }
     }
   }

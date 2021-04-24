@@ -7,11 +7,7 @@ job "memcached" {
 
       config {
         image             = "memcached:1.6.9-alpine"
-        memory_hard_limit = 240
-      }
-
-      resources {
-        memory = 90
+        memory_hard_limit = 200
       }
     }
 
