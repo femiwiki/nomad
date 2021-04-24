@@ -17,12 +17,20 @@ job "http" {
         read_only   = false
       }
 
+      artifact {
+        source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
+        destination = "local/Caddyfile"
+        mode        = "file"
+      }
+
       config {
         image   = "ghcr.io/femiwiki/mediawiki:2021-04-19T12-14-11fd8960"
         command = "caddy"
         args    = ["run"]
 
         network_mode = "host"
+
+        volumes = ["local/Caddyfile:/srv/femiwiki.com/Caddyfile"]
 
         # Mount volume into the container
         # Reference: https://www.nomadproject.io/docs/drivers/docker#mounts
