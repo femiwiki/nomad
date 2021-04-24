@@ -18,7 +18,7 @@ file_server
 encode gzip
 mwcache {
 	ristretto {
-		num_counters 100000
+		num_counters 50000
 		max_cost 10000
 		buffer_items 64
 	}
