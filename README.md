@@ -9,11 +9,6 @@
 아래와 같이 간편하게 페미위키를 로컬에서 실행할 수 있습니다.
 
 ```bash
-curl -L https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/secret.php.example -o jobs/development/configs/secret.php
-
-cp nomad/development.example.hcl nomad/development.hcl
-# Please make host volume paths available
-
 sudo nomad agent -dev -config nomad/development.hcl
 nomad job run jobs/development/mysql.nomad
 nomad job run jobs/development/memcached.nomad
@@ -23,7 +18,6 @@ nomad job run jobs/development/parsoid.nomad
 nomad job run jobs/development/restbase.nomad
 nomad job run jobs/development/mathoid.nomad
 ```
-[secrets.php]의 내용은 필요에 따라 수정해주세요.
 
 &nbsp;
 

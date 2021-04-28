@@ -14,7 +14,7 @@ jobs:
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
           sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
           sudo apt-get update && sudo apt-get install -y nomad
-          echo "::set-output name=nomad_version::$(nomad -v)"
+          echo "nomad_version: $(nomad -v)"
 
       - name: Validate job files
         run: |
@@ -23,21 +23,13 @@ jobs:
           done
 
       - name: Start a Nomad Agent
-        run: |
-          mv nomad/development.example.hcl nomad/development.hcl
-          sed -i -r "s#/path/to/configs#${PWD}/jobs/development/configs#" nomad/development.hcl
-          sudo nomad agent -dev -config nomad/development.hcl &
+        run: sudo nomad agent -dev -config nomad/development.hcl &
 
       - name: Wait for initializing...
         timeout-minutes: 5
         run: |
           until nomad node status > /dev/null; do
             sleep 1; done;
-
-      - name: Prepare configuration
-        run: |
-          curl -L https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/secret.php.example \
-            -o jobs/development/configs/secret.php
 
       - name: Run a Nomad job
         run: |
@@ -76,6 +68,8 @@ jobs:
             line="--------------------------------------------------------"
             echo -e "$line\n$1\n$line"
           }
+          header "journalctl"
+          journalctl -u nomad
           header "docker images"
           docker image ls --no-trunc
           header "nomad status"
@@ -85,12 +79,12 @@ jobs:
             nomad job status "$JOB"
             allocs=$(nomad job status "$JOB" | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="failed")print $1}')
             for ALLOC in $allocs; do
-              header "Allocation '$ALLOC' status"
+              header "[$JOB] Allocation '$ALLOC' status"
               nomad alloc status "$ALLOC";
               task=$(nomad alloc status -short "$ALLOC" | tail -n1 | awk '{print $1}')
-              header "Allocation '$ALLOC' stdout logs "
+              header "[$JOB] Allocation '$ALLOC' stdout logs "
               nomad alloc logs "$ALLOC" $task;
-              header "Allocation '$ALLOC' stderr logs "
+              header "[$JOB] Allocation '$ALLOC' stderr logs "
               nomad alloc logs -stderr "$ALLOC" $task;
             done
           done

@@ -15,19 +15,25 @@ job "fastcgi" {
   datacenters = ["dc1"]
 
   group "fastcgi" {
-    volume "configs" {
-      type      = "host"
-      source    = "configs"
-      read_only = true
-    }
-
     task "fastcgi" {
       driver = "docker"
 
-      volume_mount {
-        volume      = "configs"
-        destination = "/a"
-        read_only   = true
+      artifact {
+        source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/secret.php.example"
+        destination = "secrets/secrets.php"
+        mode        = "file"
+      }
+
+      artifact {
+        source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/LocalSettings.php"
+        destination = "local/LocalSettings.php"
+        mode        = "file"
+      }
+
+      artifact {
+        source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/development/site-list.xml"
+        destination = "local/site-list.xml"
+        mode        = "file"
       }
 
       template {
@@ -42,8 +48,10 @@ job "fastcgi" {
         memory_hard_limit = 600
 
         volumes = [
-          # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
-          "local/Hotfix.php:/a/Hotfix.php"
+          "secrets/secrets.php:/a/secret.php",
+          "local/LocalSettings.php:/a/LocalSettings.php",
+          "local/Hotfix.php:/a/Hotfix.php",
+          "local/site-list.xml:/a/site-list.xml",
         ]
 
         mounts = [
