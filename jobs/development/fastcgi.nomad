@@ -43,7 +43,7 @@ job "fastcgi" {
 
         volumes = [
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
-          "local/Hotfix.php:/config/mediawiki/Hotfix.php"
+          "local/Hotfix.php:/a/Hotfix.php"
         ]
 
         mounts = [

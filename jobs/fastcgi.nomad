@@ -26,12 +26,6 @@ job "fastcgi" {
     task "fastcgi" {
       driver = "docker"
 
-      template {
-        data        = var.hotfix
-        destination = "local/Hotfix.php"
-        change_mode = "noop"
-      }
-
       artifact {
         source      = "s3::https://femiwiki-secrets.s3-ap-northeast-1.amazonaws.com/secrets.php"
         destination = "secrets/secrets.php"
@@ -66,17 +60,23 @@ job "fastcgi" {
         options { checksum = "md5:bf4d0d65b0e696c098213b75cee5d80a" }
       }
 
+      template {
+        data        = var.hotfix
+        destination = "local/Hotfix.php"
+        change_mode = "noop"
+      }
+
       config {
         image = "ghcr.io/femiwiki/mediawiki:2021-04-25T05-29-a73ed5f4"
 
         volumes = [
-          "secrets/secrets.php:/a/secret.php",
           "local/opcache-recommended.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini",
           "local/php.ini:/usr/local/etc/php/php.ini",
           "local/php-fpm.conf:/usr/local/etc/php-fpm.conf",
           "local/www.conf:/usr/local/etc/php-fpm.d/www.conf",
+          "secrets/secrets.php:/a/secret.php",
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
-          "local/Hotfix.php:/config/mediawiki/Hotfix.php",
+          "local/Hotfix.php:/a/Hotfix.php",
         ]
 
         mounts = [
