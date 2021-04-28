@@ -25,12 +25,6 @@ job "fastcgi" {
       }
 
       artifact {
-        source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/configs/LocalSettings.php"
-        destination = "local/LocalSettings.php"
-        mode        = "file"
-      }
-
-      artifact {
         source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/development/site-list.xml"
         destination = "local/site-list.xml"
         mode        = "file"
@@ -49,7 +43,6 @@ job "fastcgi" {
 
         volumes = [
           "secrets/secrets.php:/a/secret.php",
-          "local/LocalSettings.php:/a/LocalSettings.php",
           "local/Hotfix.php:/a/Hotfix.php",
           "local/site-list.xml:/a/site-list.xml",
         ]
