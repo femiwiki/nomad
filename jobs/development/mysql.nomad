@@ -7,8 +7,11 @@ job "mysql" {
 
       config {
         image             = "mysql/mysql-server:8.0"
-        args              = ["--default-authentication-plugin=mysql_native_password"]
         memory_hard_limit = 1000
+        args = [
+          "--default_authentication_plugin=mysql_native_password",
+          "--max-connections=20"
+        ]
       }
 
       resources {

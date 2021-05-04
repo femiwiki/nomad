@@ -27,8 +27,8 @@ job "mysql" {
         image   = "mysql/mysql-server:8.0.23"
         volumes = ["local/custom.cnf:/etc/mysql/conf.d/custom.cnf"]
         args = [
-          "--default-authentication-plugin=mysql_native_password",
-          "--datadir", "/srv/mysql"
+          "--max-connections=20",
+          "--datadir", "/srv/mysql",
         ]
         memory_hard_limit = 800
       }
