@@ -23,12 +23,17 @@ job "mysql" {
         mode        = "file"
       }
 
+      artifact {
+        source      = "https://github.com/femiwiki/nomad/raw/main/mysql/my.cnf"
+        destination = "local/my.cnf"
+        mode        = "file"
+      }
+
       config {
-        image   = "mysql/mysql-server:8.0.24"
-        volumes = ["local/custom.cnf:/etc/mysql/conf.d/custom.cnf"]
-        args = [
-          "--max-connections=20",
-          "--datadir", "/srv/mysql",
+        image = "mysql/mysql-server:8.0.24"
+        volumes = [
+          "local/custom.cnf:/etc/mysql/conf.d/custom.cnf",
+          "local/my.cnf:/etc/mysql/my.cnf",
         ]
         memory_hard_limit = 800
       }

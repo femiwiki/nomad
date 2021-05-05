@@ -5,12 +5,30 @@ job "mysql" {
     task "mysql" {
       driver = "docker"
 
+      template {
+        data        = <<EOF
+[mysqld]
+skip-host-cache
+skip-name-resolve
+default_authentication_plugin=mysql_native_password
+EOF
+        destination = "local/custom.cnf"
+      }
+
+      template {
+        data        = <<EOF
+[mysqld]
+max_connections=20
+EOF
+        destination = "local/my.cnf"
+      }
+
       config {
         image             = "mysql/mysql-server:8.0"
         memory_hard_limit = 1000
-        args = [
-          "--default_authentication_plugin=mysql_native_password",
-          "--max-connections=20"
+        volumes = [
+          "local/custom.cnf:/etc/mysql/conf.d/custom.cnf",
+          "local/my.cnf:/etc/mysql/my.cnf",
         ]
       }
 
