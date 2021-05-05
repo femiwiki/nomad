@@ -18,23 +18,16 @@ job "mysql" {
       }
 
       artifact {
-        source      = "https://github.com/femiwiki/nomad/raw/main/mysql/custom.cnf"
-        destination = "local/custom.cnf"
-        mode        = "file"
-      }
-
-      artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/mysql/my.cnf"
         destination = "local/my.cnf"
         mode        = "file"
+
+        options { checksum = "md5:14b9755e6bbb87e1b35529579fb92527" }
       }
 
       config {
-        image = "mysql/mysql-server:8.0.24"
-        volumes = [
-          "local/custom.cnf:/etc/mysql/conf.d/custom.cnf",
-          "local/my.cnf:/etc/mysql/my.cnf",
-        ]
+        image             = "mysql/mysql-server:8.0.24"
+        volumes           = ["local/my.cnf:/etc/mysql/my.cnf"]
         memory_hard_limit = 800
       }
 
