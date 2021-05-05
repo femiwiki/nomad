@@ -24,7 +24,7 @@ job "mysql" {
       }
 
       config {
-        image   = "mysql/mysql-server:8.0.23"
+        image   = "mysql/mysql-server:8.0.24"
         volumes = ["local/custom.cnf:/etc/mysql/conf.d/custom.cnf"]
         args = [
           "--max-connections=20",
