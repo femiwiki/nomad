@@ -26,7 +26,7 @@ job "mysql" {
       }
 
       config {
-        image             = "mysql/mysql-server:8.0.24"
+        image             = "mysql/mysql-server:8.0.25"
         volumes           = ["local/my.cnf:/etc/mysql/my.cnf"]
         memory_hard_limit = 800
       }
