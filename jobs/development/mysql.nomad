@@ -25,6 +25,15 @@ EOF
         image             = "mysql/mysql-server:8.0"
         memory_hard_limit = 1000
         volumes           = ["local/my.cnf:/etc/mysql/my.cnf"]
+
+        mounts = [
+          {
+            type     = "volume"
+            source   = "mysql"
+            target   = "/srv/mysql"
+            readonly = false
+          },
+        ]
       }
 
       resources {
