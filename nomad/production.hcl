@@ -12,7 +12,8 @@ server {
 }
 
 client {
-  enabled = true
+  enabled                 = true
+  gc_disk_usage_threshold = 85
 }
 
 plugin "docker" {
