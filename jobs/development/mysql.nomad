@@ -11,6 +11,8 @@ job "mysql" {
 default_authentication_plugin=mysql_native_password
 datadir=/srv/mysql
 max_connections=20
+table_open_cache=300
+# performance_schema=OFF
 temptable_max_ram=64M
 temptable_max_mmap=64M
 max_binlog_cache_size=32K
