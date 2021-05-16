@@ -42,6 +42,8 @@ job "fastcgi" {
         source      = "https://github.com/femiwiki/nomad/raw/main/php/php.ini"
         destination = "local/php.ini"
         mode        = "file"
+
+        options { checksum = "md5:80449c56193c217c38f4badfb6134410" }
       }
 
       artifact {
