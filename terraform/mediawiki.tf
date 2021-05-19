@@ -1,7 +1,7 @@
 resource "nomad_job" "mysql" {
   depends_on = [
     data.nomad_plugin.ebs,
-    nomad_volume.mysql,
+    nomad_external_volume.mysql,
   ]
 
   jobspec = file("../jobs/mysql.nomad")
@@ -41,7 +41,7 @@ resource "nomad_job" "fastcgi" {
 resource "nomad_job" "http" {
   depends_on = [
     data.nomad_plugin.ebs,
-    nomad_volume.caddycerts,
+    nomad_external_volume.caddycerts,
   ]
 
   jobspec = file("../jobs/http.nomad")
