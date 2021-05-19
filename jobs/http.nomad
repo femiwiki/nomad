@@ -3,9 +3,11 @@ job "http" {
 
   group "http" {
     volume "caddycerts" {
-      type      = "csi"
-      source    = "caddycerts"
-      read_only = false
+      type            = "csi"
+      source          = "caddycerts"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "http" {
