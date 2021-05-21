@@ -64,7 +64,6 @@ job "fastcgi" {
         NOMAD_UPSTREAM_ADDR_http          = "127.0.0.1:8080"
         NOMAD_UPSTREAM_ADDR_mysql         = "127.0.0.1:3306"
         NOMAD_UPSTREAM_ADDR_memcached     = "127.0.0.1:11211"
-        NOMAD_UPSTREAM_ADDR_parsoid       = "127.0.0.1:8000"
         NOMAD_UPSTREAM_ADDR_restbase      = "127.0.0.1:7231"
         NOMAD_UPSTREAM_ADDR_mathoid       = "127.0.0.1:10044"
       }
