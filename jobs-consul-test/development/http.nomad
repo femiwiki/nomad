@@ -6,7 +6,7 @@ variable "caddyfile_for_dev" {
   auto_https off
   order mwcache before rewrite
 }
-localhost:80 127.0.0.1:80 192.168.0.2:80
+http://localhost:8080 http://127.0.0.1:8080 http://192.168.0.2:8080
 root * /srv/femiwiki.com
 php_fastcgi {$NOMAD_UPSTREAM_ADDR_fastcgi}
 file_server
@@ -91,7 +91,7 @@ job "http" {
       mode = "bridge"
 
       port "http" {
-        to = 80
+        to = 8080
       }
     }
 

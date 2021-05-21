@@ -71,22 +71,6 @@
 #   }
 # }
 
-# # resource "nomad_job" "parsoid_consul_test" {
-# #   provider = nomad.consul_test
-# #   depends_on = [
-# #     nomad_job.lb_consul_test,
-# #     nomad_job.fastcgi,
-# #     nomad_job.http,
-# #   ]
-# #   detach  = false
-# #   jobspec = file("../jobs-consul-test/parsoid.nomad")
-
-# #   hcl2 {
-# #     enabled  = true
-# #     allow_fs = true
-# #   }
-# # }
-
 # # resource "nomad_job" "restbase_consul_test" {
 # #   provider = nomad.consul_test
 # #   depends_on = [

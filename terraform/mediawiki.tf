@@ -53,21 +53,6 @@ resource "nomad_job" "http" {
   }
 }
 
-resource "nomad_job" "parsoid" {
-  depends_on = [
-    nomad_job.fastcgi,
-    nomad_job.http,
-  ]
-
-  jobspec = file("../jobs/parsoid.nomad")
-  detach  = false
-
-  hcl2 {
-    enabled  = true
-    allow_fs = true
-  }
-}
-
 resource "nomad_job" "restbase" {
   jobspec = file("../jobs/restbase.nomad")
   detach  = false

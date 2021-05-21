@@ -15,7 +15,7 @@ job "restbase" {
         RESTBASE_NUM_WORKERS  = "2"
         MEDIAWIKI_APIS_DOMAIN = "localhost"
         MEDIAWIKI_APIS_URI    = "http://${NOMAD_UPSTREAM_ADDR_http}/api.php"
-        PARSOID_URI           = "http://${NOMAD_UPSTREAM_ADDR_parsoid}"
+        PARSOID_URI           = "http://${NOMAD_UPSTREAM_ADDR_http}/rest.php"
         MATHOID_URI           = "http://${NOMAD_UPSTREAM_ADDR_mathoid}"
       }
     }
@@ -29,8 +29,8 @@ job "restbase" {
     }
 
     service {
-      name = "restbase"
-      port = "restbase"
+      name         = "restbase"
+      port         = "restbase"
       address_mode = "alloc"
 
       connect {
@@ -39,11 +39,6 @@ job "restbase" {
             upstreams {
               destination_name = "http"
               local_bind_port  = 8080
-            }
-
-            upstreams {
-              destination_name = "parsoid"
-              local_bind_port  = 8000
             }
 
             upstreams {

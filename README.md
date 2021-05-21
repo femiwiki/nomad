@@ -20,7 +20,7 @@ nomad job run jobs/development/restbase.nomad
 nomad job run jobs/development/mathoid.nomad
 ```
 
-&nbsp;
+이후 브라우저에서 [http://localhost:8080]를 방문할 수 있습니다.
 
 ## Production
 

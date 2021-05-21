@@ -6,7 +6,7 @@ variable "caddyfile_for_dev" {
   auto_https off
   order mwcache before rewrite
 }
-127.0.0.1:80 localhost:80
+http://127.0.0.1:8080 http://localhost:8080
 root * /srv/femiwiki.com
 php_fastcgi 127.0.0.1:9000
 file_server

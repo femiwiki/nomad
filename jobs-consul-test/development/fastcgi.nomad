@@ -45,7 +45,7 @@ job "fastcgi" {
 
       env {
         MEDIAWIKI_DEBUG_MODE              = "1"
-        MEDIAWIKI_SERVER                  = "http://127.0.0.1"
+        MEDIAWIKI_SERVER                  = "http://localhost"
         MEDIAWIKI_DOMAIN_FOR_NODE_SERVICE = "localhost"
       }
     }
@@ -74,11 +74,6 @@ job "fastcgi" {
             upstreams {
               destination_name = "memcached"
               local_bind_port  = 11211
-            }
-
-            upstreams {
-              destination_name = "parsoid"
-              local_bind_port  = 8000
             }
 
             upstreams {

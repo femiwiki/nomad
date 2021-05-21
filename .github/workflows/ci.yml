@@ -53,8 +53,8 @@ jobs:
 
       - name: Start a Nomad Agent and a Consul agent
         run: |
-          sudo nomad agent -dev-connect -config nomad/development.hcl &
-          consul agent -dev -bootstrap &
+          sudo nomad agent -dev-connect -config nomad/development.hcl &>/dev/null &
+          consul agent -dev -bootstrap &>/dev/null &
 
       - name: Wait for initializing...
         timeout-minutes: 5
@@ -71,7 +71,6 @@ jobs:
           nomad job run jobs/development/memcached.nomad
           nomad job run jobs/development/fastcgi.nomad
           nomad job run jobs/development/http.nomad
-          nomad job run jobs/development/parsoid.nomad
           nomad job run jobs/development/restbase.nomad
           nomad job run jobs/development/mathoid.nomad
 
@@ -79,25 +78,18 @@ jobs:
         timeout-minutes: 5
         run: |
           echo 'Waiting for http...'
-          until curl -sLfo /dev/null localhost; do
-            sleep 1; done
-
-          echo 'Waiting for parsoid...'
-          until [ -n "$(docker ps -qf 'name=^parsoid')" ]; do
-            sleep 1; done
-          ID="$(docker ps -qf 'name=^parsoid')"
-          until [ "$(docker inspect "$ID" --format='{{json .State.Health.Status}}')" = \"healthy\" ]; do
+          until curl -sLfo /dev/null localhost:8080; do
             sleep 1; done
 
       - name: Test VisualEditor API
         run: |
-          curl -sSLvo /dev/null "http://localhost/api.php?action=visualeditor&page=arbitrary_page&paction=parse&wikitext=arbitrary"
-          curl -sSLvo /dev/null "http://localhost/localhost/v1/"
+          curl -sSLvo /dev/null "http://localhost:8080/api.php?action=visualeditor&page=arbitrary_page&paction=parse&wikitext=arbitrary"
+          curl -sSLvo /dev/null "http://localhost:8080/localhost/v1/"
 
       - name: backup of accessing
         if: ${{ failure() }}
         run: |
-          echo 'Failed to connect to localhost';
+          echo 'Failed to connect to localhost:8080';
           function header {
             line="--------------------------------------------------------"
             echo -e "$line\n$1\n$line"
@@ -108,7 +100,7 @@ jobs:
           docker image ls --no-trunc
           header "nomad status"
           nomad status
-          for JOB in mysql memcached fastcgi http parsoid restbase mathoid; do
+          for JOB in mysql memcached fastcgi http restbase mathoid; do
             header "nomad job '$JOB' status"
             nomad job status "$JOB"
             allocs=$(nomad job status "$JOB" | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="failed")print $1}')
@@ -122,4 +114,4 @@ jobs:
               nomad alloc logs -stderr "$ALLOC" $task;
             done
           done
-          curl -sSLv localhost || true
+          curl -sSLv localhost:8080 || true
