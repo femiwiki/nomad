@@ -12,7 +12,7 @@ job "http" {
       }
 
       config {
-        image   = "ghcr.io/femiwiki/mediawiki:2021-04-19T12-14-11fd8960"
+        image   = "ghcr.io/femiwiki/mediawiki:2021-05-28T12-27-34da1d3f"
         command = "caddy"
         args    = ["run"]
         volumes = ["local/Caddyfile:/srv/femiwiki.com/Caddyfile"]

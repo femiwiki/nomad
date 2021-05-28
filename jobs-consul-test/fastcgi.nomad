@@ -63,7 +63,7 @@ job "fastcgi" {
       }
 
       config {
-        image = "ghcr.io/femiwiki/mediawiki:2021-05-21T14-05-b627fbec"
+        image = "ghcr.io/femiwiki/mediawiki:2021-05-28T12-27-34da1d3f"
         ports = ["fastcgi"]
 
         volumes = [
