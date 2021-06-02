@@ -3,9 +3,11 @@ job "mysql" {
 
   group "mysql" {
     volume "mysql" {
-      type      = "csi"
-      source    = "mysql"
-      read_only = false
+      type            = "csi"
+      source          = "mysql"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "mysql" {
