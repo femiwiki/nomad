@@ -33,6 +33,12 @@ job "fastcgi" {
       }
 
       artifact {
+        source      = "s3::https://femiwiki-secrets.s3-ap-northeast-1.amazonaws.com/analytics-credentials-file.json"
+        destination = "secrets/analytics-credentials-file.json"
+        mode        = "file"
+      }
+
+      artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/php/opcache-recommended.ini"
         destination = "local/opcache-recommended.ini"
         mode        = "file"
@@ -77,6 +83,7 @@ job "fastcgi" {
           "local/php-fpm.conf:/usr/local/etc/php-fpm.conf",
           "local/www.conf:/usr/local/etc/php-fpm.d/www.conf",
           "secrets/secrets.php:/a/secret.php",
+          "secrets/analytics-credentials-file.json:/a/analytics-credentials-file.json",
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
           "local/Hotfix.php:/a/Hotfix.php",
         ]
