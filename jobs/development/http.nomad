@@ -86,11 +86,11 @@ job "http" {
         ]
 
         network_mode      = "host"
-        memory_hard_limit = 400
       }
 
       resources {
         memory = 80
+        memory_max = 400
       }
     }
   }

@@ -16,12 +16,11 @@ job "restbase" {
             readonly = false
           }
         ]
-
-        memory_hard_limit = 400
       }
 
       resources {
-        memory = 100
+        memory     = 100
+        memory_max = 400
       }
 
       env {
@@ -58,11 +57,9 @@ job "restbase" {
         }
 
         sidecar_task {
-          config {
-            memory_hard_limit = 500
-          }
           resources {
-            memory = 300
+            memory     = 300
+            memory_max = 500
           }
         }
       }

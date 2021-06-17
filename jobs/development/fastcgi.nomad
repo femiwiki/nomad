@@ -39,7 +39,6 @@ job "fastcgi" {
       config {
         image             = "ghcr.io/femiwiki/mediawiki:latest"
         network_mode      = "host"
-        memory_hard_limit = 600
 
         volumes = [
           "secrets/secrets.php:/a/secret.php",
@@ -70,6 +69,7 @@ job "fastcgi" {
 
       resources {
         memory = 100
+        memory_max = 600
       }
     }
   }

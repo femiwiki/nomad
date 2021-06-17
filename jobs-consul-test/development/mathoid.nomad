@@ -7,11 +7,11 @@ job "mathoid" {
 
       config {
         image = "ghcr.io/femiwiki/mathoid:latest"
-        memory_hard_limit = 600
       }
 
       resources {
         memory = 150
+        memory_max = 600
       }
 
       env {
@@ -32,11 +32,9 @@ job "mathoid" {
         sidecar_service {}
 
         sidecar_task {
-          config {
-            memory_hard_limit = 500
-          }
           resources {
             memory = 100
+        memory_max = 500
           }
         }
       }

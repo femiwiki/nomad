@@ -50,11 +50,11 @@ job "http" {
         ulimit {
           nofile = "20000:40000"
         }
-        memory_hard_limit = 400
       }
 
       resources {
-        memory = 100
+        memory     = 100
+        memory_max = 400
       }
 
       env {

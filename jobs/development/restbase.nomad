@@ -8,11 +8,11 @@ job "restbase" {
       config {
         image             = "ghcr.io/femiwiki/restbase:latest"
         network_mode      = "host"
-        memory_hard_limit = 400
       }
 
       resources {
         memory = 100
+        memory_max = 400
       }
 
       env {

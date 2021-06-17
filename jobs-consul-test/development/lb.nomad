@@ -33,7 +33,6 @@ job "lb" {
       config {
         image             = "traefik:v2.4.8"
         network_mode      = "host"
-        memory_hard_limit = 500
         ports             = ["http", "api"]
 
         volumes = [
@@ -67,6 +66,7 @@ EOF
 
       resources {
         memory = 128
+        memory_max = 500
       }
     }
   }

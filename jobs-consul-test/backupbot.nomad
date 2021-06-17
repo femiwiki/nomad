@@ -41,11 +41,9 @@ job "backupbot" {
         }
 
         sidecar_task {
-          config {
-            memory_hard_limit = 300
-          }
           resources {
-            memory = 30
+            memory     = 30
+            memory_max = 300
           }
         }
       }

@@ -56,12 +56,11 @@ job "lb" {
             readonly = false
           },
         ]
-
-        memory_hard_limit = 500
       }
 
       resources {
-        memory = 128
+        memory     = 128
+        memory_max = 500
       }
     }
   }

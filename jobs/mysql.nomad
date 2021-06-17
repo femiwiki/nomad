@@ -28,13 +28,13 @@ job "mysql" {
       }
 
       config {
-        image             = "mysql/mysql-server:8.0.25"
-        volumes           = ["local/my.cnf:/etc/mysql/my.cnf"]
-        memory_hard_limit = 800
+        image   = "mysql/mysql-server:8.0.25"
+        volumes = ["local/my.cnf:/etc/mysql/my.cnf"]
       }
 
       resources {
-        memory = 400
+        memory     = 400
+        memory_max = 800
       }
 
       env {

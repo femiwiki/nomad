@@ -26,13 +26,13 @@ job "mysql" {
       }
 
       config {
-        image             = "mysql/mysql-server:8.0.25"
-        volumes           = ["local/my.cnf:/etc/mysql/my.cnf"]
-        memory_hard_limit = 800
+        image   = "mysql/mysql-server:8.0.25"
+        volumes = ["local/my.cnf:/etc/mysql/my.cnf"]
       }
 
       resources {
-        memory = 300
+        memory     = 300
+        memory_max = 800
       }
 
       env {
@@ -52,11 +52,9 @@ job "mysql" {
         sidecar_service {}
 
         sidecar_task {
-          config {
-            memory_hard_limit = 300
-          }
           resources {
-            memory = 30
+            memory     = 30
+            memory_max = 300
           }
         }
       }

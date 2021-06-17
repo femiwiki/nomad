@@ -25,7 +25,6 @@ EOF
 
       config {
         image             = "mysql/mysql-server:8.0"
-        memory_hard_limit = 1000
         volumes           = ["local/my.cnf:/etc/mysql/my.cnf"]
 
         mounts = [
@@ -40,6 +39,7 @@ EOF
 
       resources {
         memory = 500
+        memory_max = 1000
       }
 
       env {

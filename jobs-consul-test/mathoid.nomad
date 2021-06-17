@@ -31,11 +31,9 @@ job "mathoid" {
         sidecar_service {}
 
         sidecar_task {
-          config {
-            memory_hard_limit = 500
-          }
           resources {
-            memory = 300
+            memory     = 300
+            memory_max = 500
           }
         }
       }
