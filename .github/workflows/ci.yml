@@ -59,7 +59,14 @@ jobs:
       - name: Wait for initializing...
         timeout-minutes: 5
         run: |
+          TIME=0
           until nomad node status > /dev/null; do
+            if [ $TIME -gt 30 ]; then
+              if [ -n "$(pidof nomad)" ]; then sudo kill "$(pidof nomad)"; fi
+              sudo nomad agent -dev-connect -config nomad/development.hcl &>/dev/null &
+              TIME=0
+            fi
+            ((TIME+=1))
             sleep 1; done;
           NODE_ID="$(nomad node status -self | head -1 | awk '{print $3}')"
           until [[ $(curl -s "http://127.0.0.1:4646/v1/node/$NODE_ID") = *"consul.version"* ]]; do
