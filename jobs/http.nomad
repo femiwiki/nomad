@@ -26,7 +26,7 @@ job "http" {
       }
 
       config {
-        image   = "ghcr.io/femiwiki/mediawiki:2021-06-11T12-34-869d941b"
+        image   = "ghcr.io/femiwiki/mediawiki:2021-06-18T04-57-20822934"
         command = "caddy"
         args    = ["run"]
 
