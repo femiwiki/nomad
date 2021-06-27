@@ -64,7 +64,7 @@ jobs:
             curl -so /dev/null "localhost:8080/w/Special:MostLinked?limit=5000&offset=${NUM}"
           done
 
-      - run: docker stats
+      - run: docker stats --no-stream
 
       - name: backup of accessing
         if: ${{ failure() }}
