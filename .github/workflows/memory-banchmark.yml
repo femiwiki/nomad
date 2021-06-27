@@ -51,9 +51,9 @@ jobs:
 
       - name: Import pages
         run: |
-          nomad alloc exec -task mysql -job mysql curl -OL 'https://github.com/lens0021/snippets/raw/master/dummy.sql.gz'
-          nomad alloc exec -task mysql -job mysql gzip -d dummy.sql.gz
-          nomad alloc exec -task mysql -job mysql mysql -uroot -plocalfemiwikipassword -Dfemiwiki < dummy.sql
+          curl -OL 'https://github.com/lens0021/snippets/raw/master/dummy.sql.gz'
+          gzip -d dummy.sql.gz
+          nomad alloc exec -task mysql -i -job mysql mysql -uroot -plocalfemiwikipassword -Dfemiwiki < dummy.sql
 
       - name: Random access
         run: |
