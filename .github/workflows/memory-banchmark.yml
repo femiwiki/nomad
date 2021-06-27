@@ -60,8 +60,8 @@ jobs:
           end=$((SECONDS+180))
           while [ $SECONDS -lt $end ]; do
             NUM="$(shuf -i 1-15000 -n 1)"
-            curl -so /dev/null "localhost:8080/w/${NUM}"
-            curl -so /dev/null "localhost:8080/w/Special:MostLinked?limit=5000&offset=${NUM}"
+            curl -sLo /dev/null "localhost:8080/w/${NUM}"
+            curl -sLo /dev/null "localhost:8080/w/Special:MostLinked?limit=5000&offset=${NUM}"
           done
 
       - run: docker stats --no-stream
