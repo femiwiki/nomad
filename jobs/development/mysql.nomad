@@ -5,9 +5,29 @@ job "mysql" {
     task "mysql" {
       driver = "docker"
 
+      template {
+        data        = <<EOF
+[mysqld]
+default_authentication_plugin=mysql_native_password
+datadir=/srv/mysql
+max_connections=60
+table_open_cache=300
+performance_schema=OFF
+temptable_max_ram=64M
+temptable_max_mmap=64M
+max_binlog_cache_size=32M
+max_binlog_stmt_cache_size=32M
+myisam_mmap_size=64M
+parser_max_mem_size=256M
+tmp_table_size=8M # Defaults to 16M
+EOF
+        destination = "local/my.cnf"
+      }
+
+      # Just download to check the checksum
       artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/mysql/my.cnf"
-        destination = "local/my.cnf"
+        destination = "local/dummy"
         mode        = "file"
 
         options { checksum = "md5:9b1031516ada550d30a4e4184cc8ac58" }
