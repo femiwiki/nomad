@@ -35,12 +35,12 @@ jobs:
 
       - name: Run a Nomad job
         run: |
-          nomad job run jobs/development/mysql.nomad
-          nomad job run jobs/development/memcached.nomad
-          nomad job run jobs/development/fastcgi.nomad
-          nomad job run jobs/development/http.nomad
-          nomad job run jobs/development/restbase.nomad
-          nomad job run jobs/development/mathoid.nomad
+          nomad job run -detach jobs/development/mysql.nomad
+          nomad job run -detach jobs/development/memcached.nomad
+          nomad job run -detach jobs/development/fastcgi.nomad
+          nomad job run -detach jobs/development/http.nomad
+          nomad job run -detach jobs/development/restbase.nomad
+          nomad job run -detach jobs/development/mathoid.nomad
 
       - name: Access MediaWiki until success
         timeout-minutes: 5
@@ -51,8 +51,9 @@ jobs:
 
       - name: Import pages
         run: |
-          nomad alloc exec -task fastcgi -job fastcgi curl -OL 'https://github.com/lens0021/snippets/raw/master/dump.xml.gz'
-          nomad alloc exec -task fastcgi -job fastcgi php maintenance/importDump.php dump.xml.gz
+          nomad alloc exec -task mysql -job mysql curl -OL 'https://github.com/lens0021/snippets/raw/master/dummy.sql.gz'
+          nomad alloc exec -task mysql -job mysql gzip -d dummy.sql.gz
+          nomad alloc exec -task mysql -job mysql mysql -uroot -plocalfemiwikipassword -Dfemiwiki < dummy.sql
 
       - name: Random access
         run: |
