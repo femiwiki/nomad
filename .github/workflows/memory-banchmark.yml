@@ -57,9 +57,18 @@ jobs:
 
       - name: Random access
         run: |
+          get_seeded_random()
+          {
+            seed="$1"
+            openssl enc -aes-256-ctr -pass pass:"$seed" -nosalt \
+              </dev/zero 2>/dev/null
+          }
+
           end=$((SECONDS+180))
+          count=1
           while [ $SECONDS -lt $end ]; do
-            NUM="$(shuf -i 1-15000 -n 1)"
+            NUM="$(shuf --random-source=<(get_seeded_random 0) -i 1-15000 -n${count} | tail -n1)"
+            ((count++))
             curl -sLo /dev/null "localhost:8080/w/${NUM}"
             curl -sLo /dev/null "localhost:8080/w/Special:MostLinked?limit=5000&offset=${NUM}"
           done
