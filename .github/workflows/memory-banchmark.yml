@@ -22,25 +22,22 @@ jobs:
       - name: Wait for initializing...
         timeout-minutes: 5
         run: |
-          TIME=0
+          END=$((SECONDS+60))
           until nomad node status > /dev/null; do
-            if [ $TIME -gt 60 ]; then
+            if [ $SECONDS -gt $END ]; then
               echo 'Nomad is not booted after 60 seconds, kill...'
               if [ -n "$(pidof nomad)" ]; then sudo kill "$(pidof nomad)"; fi
               sudo nomad agent -dev -config nomad/development.hcl &>/dev/null &
-              TIME=0
+              END=$((SECONDS+60))
             fi
-            ((TIME+=1))
-            sleep 1; done;
+            sleep 1
+          done;
 
       - name: Run a Nomad job
         run: |
-          nomad job run -detach jobs/development/mysql.nomad
-          nomad job run -detach jobs/development/memcached.nomad
-          nomad job run -detach jobs/development/fastcgi.nomad
-          nomad job run -detach jobs/development/http.nomad
-          nomad job run -detach jobs/development/restbase.nomad
-          nomad job run -detach jobs/development/mathoid.nomad
+          for nomad in jobs/development/*.nomad; do
+            nomad job run -detach "$nomad"
+          done
 
       - name: Access MediaWiki until success
         timeout-minutes: 5
