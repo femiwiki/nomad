@@ -68,12 +68,6 @@ job "fastcgi" {
         options { checksum = "md5:8ce9afeeee1ae1ff893b58be8dc7c3ec" }
       }
 
-      artifact {
-        source      = "https://github.com/femiwiki/nomad/raw/main/res/robots.txt"
-        destination = "local/robots.txt"
-        mode        = "file"
-      }
-
       template {
         data        = var.hotfix
         destination = "local/Hotfix.php"
@@ -88,7 +82,6 @@ job "fastcgi" {
           "local/php.ini:/usr/local/etc/php/php.ini",
           "local/php-fpm.conf:/usr/local/etc/php-fpm.conf",
           "local/www.conf:/usr/local/etc/php-fpm.d/www.conf",
-          "local/robots.txt:/srv/femiwiki.com/robots.txt",
           "secrets/secrets.php:/a/secret.php",
           "secrets/analytics-credentials-file.json:/a/analytics-credentials-file.json",
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
