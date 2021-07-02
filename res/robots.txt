@@ -14,6 +14,7 @@ Allow: /femiwiki.com/v1/?doc
 Disallow: /*&diff=
 Disallow: /*&oldid=
 Disallow: /*&direction=
+Disallow: /*&redlink=
 Disallow: /api.php
 Disallow: /w/api.php
 Disallow: /w/Special:
