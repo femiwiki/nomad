@@ -11,20 +11,30 @@ job "http" {
         mode        = "file"
       }
 
+      artifact {
+        source      = "https://github.com/femiwiki/nomad/raw/main/res/robots.txt"
+        destination = "local/robots.txt"
+        mode        = "file"
+      }
+
       config {
-        image   = "ghcr.io/femiwiki/mediawiki:latest"
+        image   = "ghcr.io/femiwiki/mediawiki:2021-06-18T04-57-20822934"
         command = "caddy"
         args    = ["run"]
-        volumes = ["local/Caddyfile:/srv/femiwiki.com/Caddyfile"]
         ports   = ["http"]
+
+        volumes = [
+          "local/Caddyfile:/srv/femiwiki.com/Caddyfile",
+          "local/robots.txt:/srv/femiwiki.com/robots.txt",
+        ]
 
         # Mount volume into the container
         # Reference: https://www.nomadproject.io/docs/drivers/docker#mounts
         mounts = [
           {
             type     = "volume"
-            source   = "sitemap"
             target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
             readonly = false
           },
         ]

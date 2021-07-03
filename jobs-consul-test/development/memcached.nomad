@@ -9,6 +9,10 @@ job "memcached" {
         image = "memcached:1-alpine"
         ports = ["memcached"]
       }
+
+      resources {
+        memory = 100
+      }
     }
 
     network {

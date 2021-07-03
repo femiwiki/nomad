@@ -10,13 +10,18 @@ job "restbase" {
         ports = ["restbase"]
       }
 
+      resources {
+        memory     = 100
+        memory_max = 400
+      }
+
       env {
-        # Amazon EC2-t type small instances has two vCPUs
-        RESTBASE_NUM_WORKERS  = "2"
         MEDIAWIKI_APIS_DOMAIN = "localhost"
         MEDIAWIKI_APIS_URI    = "http://${NOMAD_UPSTREAM_ADDR_http}/api.php"
         PARSOID_URI           = "http://${NOMAD_UPSTREAM_ADDR_http}/rest.php"
         MATHOID_URI           = "http://${NOMAD_UPSTREAM_ADDR_mathoid}"
+        # Amazon EC2-t type small instances has two vCPUs
+        RESTBASE_NUM_WORKERS = "2"
       }
     }
 

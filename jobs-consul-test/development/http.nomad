@@ -41,6 +41,7 @@ reverse_proxy /localhost/* {$NOMAD_UPSTREAM_ADDR_restbase}
 log {
   output stdout
 }
+
 EOF
 }
 
@@ -52,7 +53,7 @@ job "http" {
       driver = "docker"
 
       template {
-        # Overwrite production Caddyfile
+        # Overwrite the default caddyfile provided by femiwiki:mediawiki
         data        = var.caddyfile_for_dev
         destination = "local/Caddyfile"
       }
@@ -63,27 +64,38 @@ job "http" {
         args    = ["run"]
         ports   = ["http"]
 
+        volumes = [
+          # Overwrite production Caddyfile
+          "local/Caddyfile:/srv/femiwiki.com/Caddyfile"
+        ]
+
         # Mount volumes into the container
         # Reference: https://www.nomadproject.io/docs/drivers/docker#mounts
         mounts = [
           {
             type     = "volume"
-            source   = "caddy"
             target   = "/etc/caddycerts"
+            source   = "caddy"
             readonly = false
           },
           {
             type     = "volume"
-            source   = "sitemap"
             target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
             readonly = false
           },
         ]
 
-        volumes = [
-          # Overwrite production Caddyfile
-          "local/Caddyfile:/srv/femiwiki.com/Caddyfile"
-        ]
+        # Increase max fd number
+        # https://github.com/femiwiki/docker-mediawiki/issues/467
+        ulimit {
+          nofile = "20000:40000"
+        }
+      }
+
+      resources {
+        memory     = 100
+        memory_max = 400
       }
     }
 

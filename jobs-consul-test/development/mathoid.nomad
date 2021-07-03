@@ -10,7 +10,7 @@ job "mathoid" {
       }
 
       resources {
-        memory = 150
+        memory     = 170
         memory_max = 600
       }
 
@@ -33,8 +33,8 @@ job "mathoid" {
 
         sidecar_task {
           resources {
-            memory = 100
-        memory_max = 500
+            memory     = 100
+            memory_max = 500
           }
         }
       }

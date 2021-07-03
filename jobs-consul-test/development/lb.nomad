@@ -31,9 +31,9 @@ job "lb" {
       driver = "docker"
 
       config {
-        image             = "traefik:v2.4.8"
-        network_mode      = "host"
-        ports             = ["http", "api"]
+        image        = "traefik:v2.4.8"
+        network_mode = "host"
+        ports        = ["http", "api"]
 
         volumes = [
           "local/traefik.toml:/etc/traefik/traefik.toml",
@@ -65,7 +65,7 @@ EOF
       }
 
       resources {
-        memory = 128
+        memory     = 128
         memory_max = 500
       }
     }

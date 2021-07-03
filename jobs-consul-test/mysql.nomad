@@ -2,7 +2,7 @@ job "mysql" {
   datacenters = ["dc1"]
 
   group "mysql" {
-    # During test period
+    # Disabled during test period
     # volume "mysql" {
     #   type      = "csi"
     #   source    = "mysql"
@@ -12,7 +12,7 @@ job "mysql" {
     task "mysql" {
       driver = "docker"
 
-      # During test period
+      # Disabled during test period
       # volume_mount {
       #   volume      = "mysql"
       #   destination = "/srv/mysql"
@@ -31,8 +31,8 @@ job "mysql" {
       }
 
       resources {
-        memory     = 300
-        memory_max = 800
+        memory     = 400
+        memory_max = 700
       }
 
       env {

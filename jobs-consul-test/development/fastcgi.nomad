@@ -1,3 +1,16 @@
+variable "hotfix" {
+  type    = string
+  default = <<EOF
+<?php
+// Use this file for hotfixes
+// Examples:
+
+// $wgGroupPermissions['*']['edit'] = true;
+// $wgDebugToolbar = false;
+// $wgDefaultSkin = 'vector';
+EOF
+}
+
 job "fastcgi" {
   datacenters = ["dc1"]
 
@@ -11,9 +24,28 @@ job "fastcgi" {
         mode        = "file"
       }
 
+      # Overwrite to set the url of femiwiki to http://127.0.0.1/
       artifact {
         source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/development/site-list.xml"
         destination = "local/site-list.xml"
+        mode        = "file"
+      }
+
+      artifact {
+        source      = "https://github.com/femiwiki/nomad/raw/main/php/php.ini"
+        destination = "local/php.ini"
+        mode        = "file"
+      }
+
+      artifact {
+        source      = "https://github.com/femiwiki/nomad/raw/main/php/php-fpm.conf"
+        destination = "local/php-fpm.conf"
+        mode        = "file"
+      }
+
+      artifact {
+        source      = "https://github.com/femiwiki/nomad/raw/main/php/www.conf"
+        destination = "local/www.conf"
         mode        = "file"
       }
 
@@ -36,11 +68,16 @@ job "fastcgi" {
         mounts = [
           {
             type     = "volume"
-            source   = "sitemap"
             target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
             readonly = false
           },
         ]
+      }
+
+      resources {
+        memory     = 400
+        memory_max = 800
       }
 
       env {
@@ -90,17 +127,4 @@ job "fastcgi" {
       }
     }
   }
-}
-
-variable "hotfix" {
-  type    = string
-  default = <<EOF
-<?php
-// Use this file for hotfixes
-
-// Examples:
-//
-// $wgDebugToolbar = false;
-// $wgDefaultSkin = 'vector';
-EOF
 }

@@ -3,10 +3,10 @@ variable "nomad_token" {
   sensitive = true
 }
 
-# variable "nomad_token_consul_test" {
-#   type      = string
-#   sensitive = true
-# }
+variable "nomad_token_consul_test" {
+  type      = string
+  sensitive = true
+}
 
 terraform {
   required_version = "~> 1.0"
@@ -42,8 +42,8 @@ provider "nomad" {
   secret_id = var.nomad_token
 }
 
-# provider "nomad" {
-#   alias     = "consul_test"
-#   address   = data.terraform_remote_state.aws.outputs.nomad_addr_consul_test
-#   secret_id = var.nomad_token_consul_test
-# }
+provider "nomad" {
+  alias     = "consul_test"
+  address   = data.terraform_remote_state.aws.outputs.nomad_addr_consul_test
+  secret_id = var.nomad_token_consul_test
+}

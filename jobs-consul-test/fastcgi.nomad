@@ -69,16 +69,16 @@ job "fastcgi" {
       }
 
       config {
-        image = "ghcr.io/femiwiki/mediawiki:latest"
+        image = "ghcr.io/femiwiki/mediawiki:2021-06-25T02-02-4bcaa838"
         ports = ["fastcgi"]
 
         volumes = [
-          "secrets/secrets.php:/a/secret.php",
-          "secrets/analytics-credentials-file.json:/a/analytics-credentials-file.json",
           "local/opcache-recommended.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini",
           "local/php.ini:/usr/local/etc/php/php.ini",
           "local/php-fpm.conf:/usr/local/etc/php-fpm.conf",
           "local/www.conf:/usr/local/etc/php-fpm.d/www.conf",
+          "secrets/secrets.php:/a/secret.php",
+          "secrets/analytics-credentials-file.json:/a/analytics-credentials-file.json",
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
           "local/Hotfix.php:/a/Hotfix.php",
         ]
@@ -86,21 +86,21 @@ job "fastcgi" {
         mounts = [
           {
             type     = "volume"
-            source   = "sitemap"
             target   = "/srv/femiwiki.com/sitemap"
+            source   = "sitemap"
             readonly = false
           },
           {
             type     = "volume"
-            source   = "l18n_cache"
             target   = "/tmp/cache"
+            source   = "l18n_cache"
             readonly = false
           },
         ]
       }
 
       resources {
-        memory     = 300
+        memory     = 400
         memory_max = 800
       }
 
@@ -181,17 +181,21 @@ variable "hotfix" {
   type    = string
   default = <<EOF
 <?php
-// Use this file for hotfixes
+/**
+ * Use this file for hotfixes
+ *
+ * @file
+ */
 
 // During the test period
 $wgDBserver = '172.31.28.31:3306';
 
 // Maintenance
-//// 점검이 끝나면 아래 라인 주석처리한 뒤, 아래 문서 내용을 비우면 됨
-//// https://femiwiki.com/w/%EB%AF%B8%EB%94%94%EC%96%B4%EC%9C%84%ED%82%A4:Sitenotice
+// 점검이 끝나면 아래 라인 주석처리한 뒤, 아래 문서 내용을 비우면 됨
+// https://femiwiki.com/w/%EB%AF%B8%EB%94%94%EC%96%B4%EC%9C%84%ED%82%A4:Sitenotice
 // $wgReadOnly = '데이터베이스 업그레이드 작업이 진행 중입니다. 작업이 진행되는 동안 사이트 이용이 제한됩니다.';
 
-//// 업로드를 막고싶을때엔 아래 라인 주석 해제하면 됨
+// 업로드를 막고싶을때엔 아래 라인 주석 해제하면 됨
 // $wgEnableUploads = false;
 EOF
 }
