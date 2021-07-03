@@ -5,7 +5,7 @@ job "lb" {
   constraint {
     attribute = "${attr.unique.network.ip-address}"
     # TODO Replace this with a network interface
-    value = "172.31.26.55"
+    value = "172.31.25.174"
   }
 
   group "lb" {
