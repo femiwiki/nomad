@@ -49,7 +49,7 @@ job "fastcgi" {
         destination = "local/php.ini"
         mode        = "file"
 
-        options { checksum = "md5:f4c216a28e6da49041d2434f690fac56" }
+        options { checksum = "md5:80449c56193c217c38f4badfb6134410" }
       }
 
       artifact {
