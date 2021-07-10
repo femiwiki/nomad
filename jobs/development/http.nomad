@@ -84,7 +84,7 @@ job "http" {
             target   = "/srv/femiwiki.com/sitemap"
             source   = "sitemap"
             readonly = false
-          }
+          },
         ]
 
         # Increase max fd number

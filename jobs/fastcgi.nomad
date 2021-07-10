@@ -100,7 +100,7 @@ job "fastcgi" {
             target   = "/tmp/cache"
             source   = "l18n_cache"
             readonly = false
-          }
+          },
         ]
 
         network_mode = "host"
@@ -118,7 +118,7 @@ job "fastcgi" {
         NOMAD_UPSTREAM_ADDR_mathoid   = "127.0.0.1:10044"
         MEDIAWIKI_SKIP_INSTALL        = "1"
         MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-        # MEDIAWIKI_SKIP_UPDATE         = "1"
+        MEDIAWIKI_SKIP_UPDATE         = "1"
       }
     }
   }

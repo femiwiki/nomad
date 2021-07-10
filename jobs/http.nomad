@@ -73,6 +73,7 @@ job "http" {
       }
     }
 
+    # Avoid hitting limit too fast.
     restart {
       attempts = 0
     }
