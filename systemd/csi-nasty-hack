@@ -1,0 +1,23 @@
+#!/bin/bash
+set -euo pipefail; IFS=$'\n\t'
+
+# This script would detach CSI volume claim whenever it is not claimed by any Nomad allocations.
+# Bug: https://github.com/hashicorp/nomad/issues/10927
+
+# Read and export the Nomad token
+# Declare and assign separately to avoid masking return values. shellcheck(SC2155)
+NOMAD_TOKEN=$(sudo cat /etc/nomad.d/token)
+export NOMAD_TOKEN
+
+# Fetch the names of running MySQL allocations.
+# Use awk as `nomad job status` has no options for Go templating.
+ALLOCS=$(nomad job status --all-allocs mysql | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="running")print $1}')
+
+# Fetch whether there is a volume claim for mysql.
+CLAIMED=$(nomad volume status -t '{{range .}}{{if eq .ID "mysql"}}{{print 1}}{{end}}{{end}}')
+
+# If there a volume claim for MySQL but no allocations for MySQL, detach it.
+if [[ -z "$ALLOCS" && -n "$CLAIMED" ]]; then
+  NODE=$(nomad node status -t '{{range .}}{{print .ID}}{{end}}')
+  nomad volume detach "$NODE" mysql
+fi

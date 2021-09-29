@@ -18,5 +18,4 @@ cp "${GIT_REPO}/systemd/nomad.service" /etc/systemd/system/nomad.service
 # Reference:
 #   - https://github.com/hashicorp/terraform-aws-nomad/blob/master/modules/run-nomad/run-nomad
 systemctl daemon-reload
-systemctl enable nomad.service
-systemctl restart nomad.service
+systemctl enable --now nomad.service
