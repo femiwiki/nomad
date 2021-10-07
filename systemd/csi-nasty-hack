@@ -19,5 +19,5 @@ CLAIMED=$(nomad volume status -t '{{range .}}{{if eq .ID "mysql"}}{{print 1}}{{e
 # If there a volume claim for MySQL but no allocations for MySQL, detach it.
 if [[ -z "$ALLOCS" && -n "$CLAIMED" ]]; then
   NODE=$(nomad node status -t '{{range .}}{{print .ID}}{{end}}')
-  nomad volume detach "$NODE" mysql
+  nomad volume detach mysql "$NODE"
 fi
