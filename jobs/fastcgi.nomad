@@ -152,6 +152,7 @@ variable "hotfix" {
 
 // 업로드를 막고싶을때엔 아래 라인 주석 해제하면 됨
 // $wgEnableUploads = false;
+$wgGroupPermissions['importer']['importupload'] = true;
 EOF
 }
 
