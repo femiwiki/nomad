@@ -9,15 +9,21 @@ set -euo pipefail; IFS=$'\n\t'
 NOMAD_TOKEN=$(sudo cat /etc/nomad.d/token)
 export NOMAD_TOKEN
 
-# Fetch the names of running MySQL allocations.
-# Use awk as `nomad job status` has no options for Go templating.
-ALLOCS=$(nomad job status --all-allocs mysql | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="running")print $1}')
+detach_volume()
+{
+  # Fetch the names of the running allocations.
+  # Use awk as `nomad job status` has no options for Go templating.
+  ALLOCS="$(nomad job status --all-allocs "$1" | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="running")print $1}')"
 
-# Fetch whether there is a volume claim for mysql.
-CLAIMED=$(nomad volume status -t '{{range .}}{{if eq .ID "mysql"}}{{print 1}}{{end}}{{end}}')
+  # Fetch whether there is a volume claim for the job.
+  CLAIMED="$(nomad volume status -t "{{range .}}{{if eq .ID \"$1\"}}{{print 1}}{{end}}{{end}}")"
 
-# If there a volume claim for MySQL but no allocations for MySQL, detach it.
-if [[ -z "$ALLOCS" && -n "$CLAIMED" ]]; then
-  NODE=$(nomad node status -t '{{range .}}{{print .ID}}{{end}}')
-  nomad volume detach mysql "$NODE"
-fi
+  # If there a volume claim for the job but no allocations for the job, detach it.
+  if [[ -z "$ALLOCS" && -n "$CLAIMED" ]]; then
+    NODE=$(nomad node status -t '{{range .}}{{print .ID}}{{end}}')
+    nomad volume detach "$1" "$NODE"
+  fi
+}
+
+detach_volume mysql
+detach_volume caddycerts
