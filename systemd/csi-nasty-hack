@@ -18,7 +18,7 @@ detach_volume()
   fi
 
   # Fetch whether there is a volume claim for the job.
-  CLAIMED="$(nomad volume status -t "{{range .}}{{if eq .ID \"$A\"}}{{print 1}}{{end}}{{end}}")"
+  CLAIMED="$(nomad volume status -t "{{range .}}{{if eq .ID \"$1\"}}{{print 1}}{{end}}{{end}}")"
   if [ -z "$CLAIMED" ]; then
     echo "There is a volume for $1."
   fi
