@@ -11,17 +11,25 @@ export NOMAD_TOKEN
 
 detach_volume()
 {
-  # Fetch the names of the running allocations.
-  # Use awk as `nomad job status` has no options for Go templating.
-  ALLOCS="$(nomad job status --all-allocs "$1" | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="running")print $1}')"
+  # Fetch whether there is a running allocation.
+  ALLOCS="$(nomad job allocs -t "{{range .}}{{print 1}}{{end}}" "$1")"
+  if [ -z "$ALLOCS" ]; then
+    echo "There is a allocation for $1."
+  fi
 
   # Fetch whether there is a volume claim for the job.
-  CLAIMED="$(nomad volume status -t "{{range .}}{{if eq .ID \"$1\"}}{{print 1}}{{end}}{{end}}")"
+  CLAIMED="$(nomad volume status -t "{{range .}}{{if eq .ID \"$A\"}}{{print 1}}{{end}}{{end}}")"
+  if [ -z "$CLAIMED" ]; then
+    echo "There is a volume for $1."
+  fi
 
   # If there a volume claim for the job but no allocations for the job, detach it.
   if [[ -z "$ALLOCS" && -n "$CLAIMED" ]]; then
+    echo "Trying to detach the volume..."
     NODE=$(nomad node status -t '{{range .}}{{print .ID}}{{end}}')
     nomad volume detach "$1" "$NODE"
+  else
+    echo 'No problem detected.'
   fi
 }
 
