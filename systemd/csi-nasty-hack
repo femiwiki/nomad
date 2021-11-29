@@ -12,26 +12,26 @@ export NOMAD_TOKEN
 detach_volume()
 {
   # Fetch whether there is a running allocation.
-  ALLOCS="$(nomad job allocs -t "{{range .}}{{print 1}}{{end}}" "$1")"
-  if [ -z "$ALLOCS" ]; then
+  ALLOC="$(nomad job allocs -t "{{range .}}{{print 1}}{{end}}" "$1")"
+  if [ -z "$ALLOC" ]; then
     echo "There is a allocation for $1."
   fi
 
   # Fetch whether there is a volume claim for the job.
-  CLAIMED="$(nomad volume status -t "{{range .}}{{if eq .ID \"$1\"}}{{print 1}}{{end}}{{end}}")"
+  CLAIMED="$(nomad volume status -t "{{range .}}{{if eq .ID \"$2\"}}{{print 1}}{{end}}{{end}}")"
   if [ -z "$CLAIMED" ]; then
-    echo "There is a volume for $1."
+    echo "There is a volume, $2."
   fi
 
   # If there a volume claim for the job but no allocations for the job, detach it.
-  if [[ -z "$ALLOCS" && -n "$CLAIMED" ]]; then
+  if [[ -z "$ALLOC" && -n "$CLAIMED" ]]; then
     echo "Trying to detach the volume..."
     NODE=$(nomad node status -t '{{range .}}{{print .ID}}{{end}}')
-    nomad volume detach "$1" "$NODE"
+    nomad volume detach "$2" "$NODE"
   else
-    echo 'No problem detected.'
+    echo "No problem detected for $1 and $2."
   fi
 }
 
-detach_volume mysql
-detach_volume caddycerts
+detach_volume mysql mysql
+detach_volume fastcgi caddycerts
