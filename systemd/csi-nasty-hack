@@ -34,4 +34,4 @@ detach_volume()
 }
 
 detach_volume mysql mysql
-detach_volume fastcgi caddycerts
+detach_volume http caddycerts
