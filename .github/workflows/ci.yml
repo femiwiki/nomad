@@ -6,14 +6,14 @@ jobs:
   tf-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Format
         run: terraform -chdir=terraform fmt -check -diff -recursive
 
   hcl-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16.3'
@@ -34,7 +34,7 @@ jobs:
   caddy-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run caddy fmt
         run: |
           cd caddy
@@ -49,7 +49,7 @@ jobs:
   before-cd-test:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Nomad and Consul
         run: |
