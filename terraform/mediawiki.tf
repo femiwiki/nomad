@@ -62,13 +62,3 @@ resource "nomad_job" "restbase" {
     allow_fs = true
   }
 }
-
-resource "nomad_job" "mathoid" {
-  jobspec = file("../jobs/mathoid.nomad")
-  detach  = false
-
-  hcl2 {
-    enabled  = true
-    allow_fs = true
-  }
-}

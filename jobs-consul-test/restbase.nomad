@@ -29,7 +29,6 @@ job "restbase" {
         # Workaround for https://github.com/femiwiki/femiwiki/issues/151
         MEDIAWIKI_APIS_URI = "https://femiwiki.com/api.php"
         PARSOID_URI        = "http://${NOMAD_UPSTREAM_ADDR_http}/rest.php"
-        MATHOID_URI        = "http://${NOMAD_UPSTREAM_ADDR_mathoid}"
       }
     }
 
@@ -47,11 +46,6 @@ job "restbase" {
             upstreams {
               destination_name = "http"
               local_bind_port  = 8080
-            }
-
-            upstreams {
-              destination_name = "mathoid"
-              local_bind_port  = 10044
             }
           }
         }

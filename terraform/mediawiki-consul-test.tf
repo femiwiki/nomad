@@ -86,17 +86,3 @@
 #     allow_fs = true
 #   }
 # }
-
-# resource "nomad_job" "mathoid_consul_test" {
-#   provider = nomad.consul_test
-#   depends_on = [
-#     nomad_job.lb_consul_test,
-#   ]
-#   detach  = false
-#   jobspec = file("../jobs-consul-test/mathoid.nomad")
-
-#   hcl2 {
-#     enabled  = true
-#     allow_fs = true
-#   }
-# }

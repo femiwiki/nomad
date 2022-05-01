@@ -31,7 +31,6 @@ job "restbase" {
         # Workaround for https://github.com/femiwiki/femiwiki/issues/151
         MEDIAWIKI_APIS_URI = "https://femiwiki.com/api.php"
         PARSOID_URI        = "http://127.0.0.1:80/rest.php"
-        MATHOID_URI        = "http://127.0.0.1:10044"
       }
     }
   }

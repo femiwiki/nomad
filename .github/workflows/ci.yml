@@ -117,7 +117,7 @@ jobs:
           docker image ls --no-trunc
           header "nomad status"
           nomad status
-          for JOB in mysql memcached fastcgi http restbase mathoid; do
+          for JOB in mysql memcached fastcgi http restbase; do
             header "nomad job '$JOB' status"
             nomad job status "$JOB"
             allocs=$(nomad job status "$JOB" | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="failed")print $1}')

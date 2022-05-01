@@ -147,11 +147,6 @@ job "fastcgi" {
               destination_name = "restbase"
               local_bind_port  = 7231
             }
-
-            upstreams {
-              destination_name = "mathoid"
-              local_bind_port  = 10044
-            }
           }
         }
 
