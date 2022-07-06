@@ -86,7 +86,6 @@ job "fastcgi" {
         NOMAD_UPSTREAM_ADDR_mysql         = "127.0.0.1:3306"
         NOMAD_UPSTREAM_ADDR_memcached     = "127.0.0.1:11211"
         NOMAD_UPSTREAM_ADDR_restbase      = "127.0.0.1:7231"
-        NOMAD_UPSTREAM_ADDR_mathoid       = "127.0.0.1:10044"
         MEDIAWIKI_DEBUG_MODE              = "1"
         MEDIAWIKI_SERVER                  = "http://localhost:8080"
         MEDIAWIKI_DOMAIN_FOR_NODE_SERVICE = "localhost"

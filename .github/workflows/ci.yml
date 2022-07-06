@@ -6,20 +6,20 @@ jobs:
   tf-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Format
         run: terraform -chdir=terraform fmt -check -diff -recursive
 
   hcl-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
         with:
           go-version: '^1.16.3'
 
       - name: Install hclfmt
-        run: go get -u 'github.com/hashicorp/hcl/v2/cmd/hclfmt'
+        run: go install 'github.com/hashicorp/hcl/v2/cmd/hclfmt@latest'
 
       - name: Run hclfmt
         run: |
@@ -34,7 +34,7 @@ jobs:
   caddy-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run caddy fmt
         run: |
           cd caddy
@@ -49,7 +49,7 @@ jobs:
   before-cd-test:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Nomad and Consul
         run: |
@@ -117,7 +117,7 @@ jobs:
           docker image ls --no-trunc
           header "nomad status"
           nomad status
-          for JOB in mysql memcached fastcgi http restbase mathoid; do
+          for JOB in mysql memcached fastcgi http restbase; do
             header "nomad job '$JOB' status"
             nomad job status "$JOB"
             allocs=$(nomad job status "$JOB" | awk '/Allocations/,0' | tail -n +3 | awk '{if($6=="failed")print $1}')
