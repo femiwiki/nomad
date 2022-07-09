@@ -53,14 +53,6 @@ job "fastcgi" {
       }
 
       artifact {
-        source      = "https://github.com/femiwiki/docker-mediawiki/blob/5acd46869e06de726f19b277d24005f356e5d901/configs/LocalSettings.php"
-        destination = "local/LocalSettings.php"
-        mode        = "file"
-
-        options { checksum = "md5:333a8886c96e404574565a61518c2841" }
-      }
-
-      artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/php/php-fpm.conf"
         destination = "local/php-fpm.conf"
         mode        = "file"
@@ -74,6 +66,14 @@ job "fastcgi" {
         mode        = "file"
 
         options { checksum = "md5:8ce9afeeee1ae1ff893b58be8dc7c3ec" }
+      }
+
+      artifact {
+        source      = "https://github.com/femiwiki/docker-mediawiki/blob/5acd46869e06de726f19b277d24005f356e5d901/configs/LocalSettings.php"
+        destination = "local/LocalSettings.php"
+        mode        = "file"
+
+        options { checksum = "md5:b3482a8b1b2d421a60bef817efed1aad" }
       }
 
       template {
