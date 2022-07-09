@@ -69,7 +69,7 @@ job "fastcgi" {
       }
 
       artifact {
-        source      = "https://github.com/femiwiki/docker-mediawiki/blob/5acd46869e06de726f19b277d24005f356e5d901/configs/LocalSettings.php"
+        source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/615132c9405c8c1006e8f0cc2f911339ce94b6be/configs/LocalSettings.php"
         destination = "local/LocalSettings.php"
         mode        = "file"
 
