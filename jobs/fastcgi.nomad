@@ -154,6 +154,10 @@ variable "hotfix" {
 
 // https://github.com/femiwiki/femiwiki/issues/309
 wfLoadExtension( 'FlaggedRevs' );
+
+function wfWikiID() {
+  return \WikiMap::getCurrentWikiId();
+}
 EOF
 }
 
