@@ -158,6 +158,10 @@ wfLoadExtension( 'FlaggedRevs' );
 function wfWikiID() {
   return \WikiMap::getCurrentWikiId();
 }
+
+function wfGetMainCache() {
+  return \ObjectCache::getLocalClusterInstance();
+}
 EOF
 }
 
