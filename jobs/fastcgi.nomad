@@ -117,7 +117,7 @@ job "fastcgi" {
         NOMAD_UPSTREAM_ADDR_restbase  = "127.0.0.1:7231"
         MEDIAWIKI_SKIP_INSTALL        = "1"
         MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-        MEDIAWIKI_SKIP_UPDATE         = "1"
+        # MEDIAWIKI_SKIP_UPDATE         = "1"
       }
     }
   }
