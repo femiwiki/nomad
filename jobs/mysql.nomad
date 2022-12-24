@@ -28,7 +28,7 @@ job "mysql" {
       }
 
       config {
-        image   = "mysql/mysql-server:8.0.28-1.2.7-server"
+        image   = "mysql/mysql-server:8.0.31"
         volumes = ["local/my.cnf:/etc/mysql/my.cnf"]
       }
 
