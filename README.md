@@ -57,15 +57,15 @@ nomad-acl-bootstrap은 `nomad acl bootstrap`을 실행하고 `NOMAD_TOKEN`으로
 노드가 하나 뿐인 현재 세팅에서 Nomad를 업그레이드 해야 할 때는 다운타임을 가지고 수작업으로 모든 서비스를 내린 후 다시 생성하는 방법을 사용하여야 합니다.
 단순히 바이너리만 교체할 경우 구 버전의 Nomad가 실행한 컨테이너가 추적되지 않아 새 Nomad가 띄우려고 하는 컨테이너와 포트 등이 충돌한 경험이 있습니다.
 
-1. fastcgi, mysql, http 등의 서비스를 내린다.
+1. `nomad job stop -purge <NAME>`으로 fastcgi, mysql, http 등의 서비스를 내린다.
 2. `nomad node status`로 node ID를 알아낸다.
-3. 볼륨들을 모두 제거한다. (`volume detach mysql <NODE_ID>; volume detach caddycerts <NODE_ID>` → `volume deregister`) 만일 aws-ebs0를 먼저 제거했다면 볼륨에 대한 작업을 할 수 없으므로 다시 살려야 한다.
-4. aws-ebs-csi-driver를 내린다.
-5. 남은 모든 서비스를 내린다.
-6. 바이너리를 교체한다.
-7. aws-ebs-csi-driver를 `nomad job run jobs/plugin-ebs-*.nomad`로 올린다.
+3. 볼륨들을 모두 제거한다. (`nomad volume detach mysql <NODE_ID>; nomad volume detach caddycerts <NODE_ID>` → `nomad volume deregister`) 만일 aws-ebs0를 먼저 제거했다면 볼륨에 대한 작업을 할 수 없으므로 다시 살려야 한다.
+4. 남은 모든 서비스를 내린다.
+5. [스크립트](https://github.com/femiwiki/infra/blob/6e55a33bca89a1a89a96a6f1564353920dd2e885/aws/res/bootstrap.sh#L124-L126)를 참고해 바이너리를 교체한다.
+6. `~/nomad` 디렉토리를 원하는 git 트리로 체크아웃한다.
+7. aws-ebs-csi-driver를 `nomad job run jobs/plugin-ebs-controller.nomad; nomad job run jobs/plugin-ebs-nodes.nomad`로 올린다. depends_on이 꼬여서 미리 실행하지 않으면 https://github.com/femiwiki/nomad/issues/73 문제가 발생한다.
 8. `nomad plugin status`로 플러그인 상태를 확인한다.
-9. 테라폼으로 나머지를 모두 올린다.
+9. 테라폼 클라우드로 나머지를 모두 올린다.
 
 ---
 
