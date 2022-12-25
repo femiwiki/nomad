@@ -12,7 +12,7 @@ job "backupbot" {
       }
 
       config {
-        image        = "ghcr.io/femiwiki/backupbot:2021-10-22T20-01-6df8168f"
+        image        = "ghcr.io/femiwiki/backupbot:2022-12-24t14-29-d01300c6"
         volumes      = ["secrets/secrets.php:/a/secrets.php"]
         network_mode = "host"
       }

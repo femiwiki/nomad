@@ -75,7 +75,7 @@ job "fastcgi" {
       }
 
       config {
-        image = "ghcr.io/femiwiki/mediawiki:2022-07-10t09-57-9fa4b067"
+        image = "ghcr.io/femiwiki/mediawiki:2022-12-25t00-28-9653515e"
 
         volumes = [
           "local/opcache-recommended.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini",
@@ -151,9 +151,6 @@ variable "hotfix" {
 
 // 업로드를 막고싶을때엔 아래 라인 주석 해제하면 됨
 // $wgEnableUploads = false;
-
-// https://github.com/femiwiki/femiwiki/issues/309
-wfLoadExtension( 'FlaggedRevs' );
 EOF
 }
 
