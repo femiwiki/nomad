@@ -1,0 +1,41 @@
+name: Bump MW
+
+on:
+  repository_dispatch:
+    types: [bump-mediawiki]
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+
+jobs:
+  bump-mediawiki:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+
+      - uses: actions/github-script@v6
+        id: vars
+        with:
+          script: |
+            return {
+              tag: '${{github.event.client_payload.tag}}' || '${{github.event.inputs.tag}}',
+            }
+
+      - run: go install github.com/minamijoyo/hcledit@latest
+
+      - name: Edit HCL
+        run: |
+          cd jobs
+          "$GOPATH"/bin/hcledit attribute set -f fastcgi.nomad \
+            -u job.fastcgi.group.fastcgi.task.fastcgi.config.image \
+          '"ghcr.io/femiwiki/mediawiki:${{fromJSON(steps.vars.outputs.result).tag}}"'
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          commit-message: Bump mediawiki docker image
+          title: Bump MediaWiki docker image
+          branch: deploy-bump-mw-${{fromJSON(steps.vars.outputs.result).tag}}
