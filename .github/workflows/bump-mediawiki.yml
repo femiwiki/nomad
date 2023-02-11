@@ -35,4 +35,4 @@ jobs:
           token: ${{secrets.GITHUB_TOKEN}}
           commit-message: Bump mediawiki docker image
           title: Bump MediaWiki docker image
-          branch: deploy-bump-mw-${{fromJSON(steps.vars.outputs.result).ver}}
+          branch: deploy-bump-mw-${{fromJSON(steps.vars.outputs.result).tag}}
