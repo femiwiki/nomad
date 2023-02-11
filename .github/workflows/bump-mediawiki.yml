@@ -1,3 +1,5 @@
+name: Bump MW
+
 on:
   repository_dispatch:
     types: [bump-mediawiki]
