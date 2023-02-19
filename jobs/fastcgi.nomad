@@ -3,7 +3,7 @@ job "fastcgi" {
 
   group "fastcgi" {
     # Init Task Lifecycle
-    # See https://www.nomadproject.io/docs/job-specification/lifecycle#init-task-pattern
+    # Reference: https://www.nomadproject.io/docs/job-specification/lifecycle#init-task-pattern
     task "wait-for-backend" {
       lifecycle {
         hook    = "prestart"
