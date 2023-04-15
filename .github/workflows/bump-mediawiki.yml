@@ -44,4 +44,11 @@ jobs:
           token: ${{secrets.BOT_TOKEN}}
           commit-message: Bump mediawiki docker image
           title: Bump MediaWiki docker image
+          body: |
+            ### pre-merge
+
+            - [ ] The checksums are verified.
+            - [ ] The `MEDIAWIKI_SKIP_UPDATE` environment variable is set correctly.
+
+            Automated changes by [create-pull-request](https://github.com/peter-evans/create-pull-request) GitHub action
           branch: deploy-bump-mw-${{fromJSON(steps.vars.outputs.result).tag}}
