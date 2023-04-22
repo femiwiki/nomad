@@ -75,7 +75,7 @@ job "fastcgi" {
       }
 
       config {
-        image = "ghcr.io/femiwiki/mediawiki:2023-04-15T01-52-d0d563ab"
+        image = "ghcr.io/femiwiki/mediawiki:2023-04-22T16-57-a1a04a6f"
 
         volumes = [
           "local/opcache-recommended.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini",
