@@ -67,8 +67,8 @@ job "http" {
       }
 
       env {
-        CADDYPATH     = "/etc/caddycerts"
-        FASTCGI_ADDR  = "127.0.0.1:9000"
+        CADDYPATH    = "/etc/caddycerts"
+        FASTCGI_ADDR = "127.0.0.1:9000"
       }
     }
 
