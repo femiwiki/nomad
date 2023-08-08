@@ -52,13 +52,3 @@ resource "nomad_job" "http" {
     allow_fs = true
   }
 }
-
-resource "nomad_job" "restbase" {
-  jobspec = file("../jobs/restbase.nomad")
-  detach  = false
-
-  hcl2 {
-    enabled  = true
-    allow_fs = true
-  }
-}

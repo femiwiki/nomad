@@ -33,11 +33,6 @@ header {
 rewrite /w/api.php /api.php
 rewrite /w/* /index.php
 
-# Proxy requests to RESTBase
-# Reference:
-#   https://www.mediawiki.org/wiki/RESTBase/Installation#Proxy_requests_to_RESTBase_from_your_webserver
-reverse_proxy /localhost/* 127.0.0.1:7231
-
 log {
   output stdout
 }

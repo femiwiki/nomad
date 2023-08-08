@@ -16,7 +16,6 @@ nomad job run jobs/development/memcached.nomad
 nomad job run jobs/development/fastcgi.nomad
 nomad job run jobs/development/http.nomad
 nomad job run jobs/development/parsoid.nomad
-nomad job run jobs/development/restbase.nomad
 ```
 
 이후 브라우저에서 [http://localhost:8080]를 방문할 수 있습니다.
