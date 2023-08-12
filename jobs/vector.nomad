@@ -12,8 +12,11 @@ job "vector" {
       }
 
       config {
-        image   = "timberio/vector:0.31.0-alpine"
-        volumes = ["local/vector.toml:/etc/vector/vector.toml"]
+        image = "timberio/vector:0.31.0-alpine"
+        volumes = [
+          "local/vector.toml:/etc/vector/vector.toml",
+          "/var/run/docker.sock:/var/run/docker.sock",
+        ]
       }
 
       resources {
@@ -48,12 +51,12 @@ type = "internal_logs"
 
 [sinks.openobserve_vector_logs]
 type = "http"
-inputs = ["vector_logs"]
+inputs = [ "vector_logs" ]
 uri = "https://api.openobserve.ai/api/femiwiki_2lbGLNGsIgcwF9Y/vector_logs/_json"
 method = "post"
 auth.strategy = "basic"
 auth.user = "admin@femiwiki.com"
-auth.password = "OPENOBSERVE PASSWORD"
+auth.password = "OPENOBSERVE_PASSWORD"
 compression = "gzip"
 encoding.codec = "json"
 encoding.timestamp_format = "rfc3339"
@@ -63,7 +66,7 @@ healthcheck.enabled = false
 type = "docker_logs"
 
 [transforms.docker_json_parser]
-inputs = ["docker_logs"]
+inputs = [ "docker_logs" ]
 type = "remap"
 source = '''
 if is_string(.image) && contains(string!(.image), ":") {
@@ -79,12 +82,12 @@ if is_json(string!(.message)) {
 
 [sinks.openobserve_docker_logs]
 type = "http"
-inputs = ["docker_json_parser",]
+inputs = [ "docker_json_parser", ]
 uri = "https://api.openobserve.ai/api/femiwiki_2lbGLNGsIgcwF9Y/docker_logs/_json"
 method = "post"
 auth.strategy = "basic"
 auth.user = "admin@femiwiki.com"
-auth.password = "OPENOBSERVE PASSWORD"
+auth.password = "OPENOBSERVE_PASSWORD"
 compression = "gzip"
 encoding.codec = "json"
 encoding.timestamp_format = "rfc3339"
