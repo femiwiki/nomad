@@ -116,7 +116,7 @@ job "fastcgi" {
         NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
         MEDIAWIKI_SKIP_INSTALL        = "1"
         MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-        # MEDIAWIKI_SKIP_UPDATE         = "1"
+        MEDIAWIKI_SKIP_UPDATE         = "1"
       }
     }
   }
@@ -142,32 +142,6 @@ variable "hotfix" {
  *
  * @file
  */
-
-$wgMWLoggerDefaultSpi = [
-	'class' => '\\MediaWiki\\Logger\\MonologSpi',
-	'args' => [ [
-		'loggers' => [
-			'@default' => [
-				'processors' => [ 'wiki', 'psr' ],
-				'handlers' => [ 'stream' ]
-			],
-		],
-		'processors' => [
-			'wiki' => [ 'class' => '\\MediaWiki\\Logger\\Monolog\\WikiProcessor' ],
-			'psr' => [ 'class' => '\\Monolog\\Processor\\PsrLogMessageProcessor' ],
-		],
-		'handlers' => [
-			'stream' => [
-				'class' => '\\Monolog\\Handler\\StreamHandler',
-				'args' => [ 'php://stdout' ],
-				'formatter' => 'json'
-			],
-		],
-		'formatters' => [
-			'json' => [ 'class' => '\\Monolog\\Formatter\\JsonFormatter' ],
-		],
-	] ],
-];
 
 // Maintenance
 // 점검이 끝나면 아래 라인 주석처리한 뒤, 아래 문서 내용을 비우면 됨
