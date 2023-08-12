@@ -69,20 +69,9 @@ healthcheck.enabled = false
 type = "docker_logs"
 include_containers = [ "http-" ]
 
-[transforms.caddy_parser]
-inputs = [ "caddy_logs" ]
-type = "remap"
-source = '''
-if is_json(string!(.message)) {
-  .message = parse_json!(string!(.message))
-} else if is_string(.message) {
-  .message = {"msg": .message}
-}
-'''
-
 [sinks.openobserve_caddy_logs]
 type = "http"
-inputs = [ "caddy_parser", ]
+inputs = [ "caddy_logs", ]
 uri = "https://api.openobserve.ai/api/femiwiki_2lbGLNGsIgcwF9Y/caddy_logs/_json"
 method = "post"
 auth.strategy = "basic"
