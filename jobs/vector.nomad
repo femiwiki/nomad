@@ -8,7 +8,7 @@ job "vector" {
 
       template {
         data        = var.vector_toml
-        destination = "/etc/vector/vector.toml"
+        destination = "/local/vector.toml"
       }
 
       config {
