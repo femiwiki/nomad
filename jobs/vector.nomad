@@ -62,27 +62,60 @@ encoding.codec = "json"
 encoding.timestamp_format = "rfc3339"
 healthcheck.enabled = false
 
+#
+# Caddy log
+#
+[sources.caddy_logs]
+type = "docker_logs"
+include_containers = [ "http-" ]
+
+[transforms.caddy_parser]
+inputs = [ "caddy_logs" ]
+type = "remap"
+source = '''
+if is_json(string!(.message)) {
+  .message = parse_json!(string!(.message))
+} else if is_string(.message) {
+  .message = {"msg": .message}
+}
+'''
+
+[sinks.openobserve_caddy_logs]
+type = "http"
+inputs = [ "caddy_parser", ]
+uri = "https://api.openobserve.ai/api/femiwiki_2lbGLNGsIgcwF9Y/caddy_logs/_json"
+method = "post"
+auth.strategy = "basic"
+auth.user = "admin@femiwiki.com"
+auth.password = "OPENOBSERVE_PASSWORD"
+compression = "gzip"
+encoding.codec = "json"
+encoding.timestamp_format = "rfc3339"
+healthcheck.enabled = false
+
+#
+# Other docker logs
+#
 [sources.docker_logs]
 type = "docker_logs"
+exclude_containers = [
+  "http-",
+]
 
-[transforms.docker_json_parser]
+[transforms.docker_parser]
 inputs = [ "docker_logs" ]
 type = "remap"
 source = '''
 if is_string(.image) && contains(string!(.image), ":") {
   .image_repository = split(string!(.image), r':')[0]
 }
-
-if is_json(string!(.message)) {
-  .message.msg = parse_json!(string!(.message))
-} else if is_string(.message) {
-  .message = {"msg": .message}
-}
 '''
 
+# Note: uri option is not templateable
+# https://github.com/vectordotdev/vector/issues/1155
 [sinks.openobserve_docker_logs]
 type = "http"
-inputs = [ "docker_json_parser", ]
+inputs = [ "docker_parser", ]
 uri = "https://api.openobserve.ai/api/femiwiki_2lbGLNGsIgcwF9Y/docker_logs/_json"
 method = "post"
 auth.strategy = "basic"
