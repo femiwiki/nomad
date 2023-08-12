@@ -2,6 +2,7 @@ on:
   push:
     paths-ignore:
       - jobs/vector.nomad
+      - terraform/vector.tf
   pull_request:
 
 jobs:
