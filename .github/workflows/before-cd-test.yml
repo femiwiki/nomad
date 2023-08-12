@@ -1,50 +1,10 @@
-name: CI
-
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - jobs/vector.nomad
+  pull_request:
 
 jobs:
-  tf-fmt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Format
-        run: terraform -chdir=terraform fmt -check -diff -recursive
-
-  hcl-fmt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '^1.16.3'
-
-      - name: Install hclfmt
-        run: go install 'github.com/hashicorp/hcl/v2/cmd/hclfmt@latest'
-
-      - name: Run hclfmt
-        run: |
-          for f in **/*.{nomad,hcl}; do
-            hclfmt \
-              -check \
-              -require-no-change \
-              -w \
-              "$f"
-          done
-
-  caddy-fmt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run caddy fmt
-        run: |
-          cd caddy
-          for CADDYFILE in *; do
-            cp $CADDYFILE Caddyfile.orig
-            docker run -v "$PWD/$CADDYFILE":/srv/Caddyfile caddy \
-              caddy fmt --overwrite
-            diff Caddyfile.orig $CADDYFILE
-          done
-
   # This name is used by status check requirement
   before-cd-test:
     runs-on: ubuntu-20.04
