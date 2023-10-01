@@ -4,14 +4,14 @@ jobs:
   tf-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Format
         run: terraform -chdir=terraform fmt -check -diff -recursive
 
   hcl-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version: '^1.16.3'
@@ -32,7 +32,7 @@ jobs:
   caddy-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run caddy fmt
         run: |
           cd caddy
