@@ -16,13 +16,3 @@ cat <<< 'export NOMAD_TOKEN=$(sudo cat /etc/nomad.d/token)' >> "$HOME/.bashrc"
 
 # Print the token to stdout
 echo "Nomad ACL Secret ID = $NOMAD_TOKEN"
-
-# Set a nasty cron for the bug https://github.com/hashicorp/nomad/issues/10927
-GIT_REPO=$(dirname "$0")
-cp "${GIT_REPO}/systemd/csi-nasty-hack.service" /etc/systemd/system/
-cp "${GIT_REPO}/systemd/csi-nasty-hack.timer"   /etc/systemd/system/
-cp "${GIT_REPO}/systemd/csi-nasty-hack"         /etc/nomad.d/
-
-# Start the service and the timer
-systemctl daemon-reload
-systemctl enable --now csi-nasty-hack.timer
