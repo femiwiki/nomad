@@ -6,7 +6,7 @@ job "memcached" {
       driver = "docker"
 
       config {
-        image = "memcached:1.6.17-alpine"
+        image = "memcached:1.6.23-alpine"
       }
 
       resources {

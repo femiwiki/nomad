@@ -8,7 +8,7 @@ job "plugin-ebs-controller" {
       driver = "docker"
 
       config {
-        image = "amazon/aws-ebs-csi-driver:v1.6.2"
+        image = "public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v1.28.0"
 
         args = [
           "controller",
