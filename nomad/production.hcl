@@ -18,8 +18,6 @@ server {
 
 client {
   enabled = true
-  # https://github.com/hashicorp/nomad/issues/18871#issuecomment-1781207268
-  cpu_total_compute = 9000
 }
 
 plugin "docker" {
