@@ -1,0 +1,27 @@
+name: 'Lint: Caddyfile'
+
+on:
+  push:
+    paths:
+      - '**/Caddyfile'
+      - .github/workflows/lint-caddy.yml
+  pull_request:
+    paths:
+      - '**/Caddyfile'
+      - .github/workflows/lint-caddy.yml
+
+jobs:
+
+  caddy-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run caddy fmt
+        run: |
+          cd caddy
+          for CADDYFILE in *; do
+            cp $CADDYFILE Caddyfile.orig
+            docker run -v "$PWD/$CADDYFILE":/srv/Caddyfile caddy \
+              caddy fmt --overwrite
+            diff Caddyfile.orig $CADDYFILE
+          done

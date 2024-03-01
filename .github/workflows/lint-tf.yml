@@ -1,0 +1,19 @@
+name: 'Lint: tf'
+
+on:
+  push:
+    paths:
+      - '**/*.tf'
+      - .github/workflows/lint-tf.yml
+  pull_request:
+    paths:
+      - '**/*.tf'
+      - .github/workflows/lint-tf.yml
+
+jobs:
+  tf-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Format
+        run: terraform -chdir=terraform fmt -check -diff -recursive

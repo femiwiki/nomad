@@ -1,0 +1,34 @@
+name: 'Lint: hcl'
+
+on:
+  push:
+    paths:
+      - '**/*{nomad,hcl}'
+      - .github/workflows/lint-hcl.yml
+  pull_request:
+    paths:
+      - '**/*{nomad,hcl}'
+      - .github/workflows/lint-hcl.yml
+
+jobs:
+
+  hcl-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '^1.16.3'
+
+      - name: Install hclfmt
+        run: go install 'github.com/hashicorp/hcl/v2/cmd/hclfmt@latest'
+
+      - name: Run hclfmt
+        run: |
+          for f in **/*.{nomad,hcl}; do
+            hclfmt \
+              -check \
+              -require-no-change \
+              -w \
+              "$f"
+          done
