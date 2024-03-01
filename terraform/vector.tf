@@ -10,7 +10,6 @@ resource "nomad_job" "vector" {
   jobspec = replace(file("../jobs/vector.nomad"), "OPENOBSERVE_PASSWORD", var.openobserve_password)
 
   hcl2 {
-    enabled  = true
     allow_fs = true
   }
 }

@@ -8,7 +8,6 @@ resource "nomad_job" "mysql" {
   detach  = false
 
   hcl2 {
-    enabled  = true
     allow_fs = true
   }
 }
@@ -18,7 +17,6 @@ resource "nomad_job" "memcached" {
   detach  = false
 
   hcl2 {
-    enabled  = true
     allow_fs = true
   }
 }
@@ -33,7 +31,6 @@ resource "nomad_job" "fastcgi" {
   detach  = false
 
   hcl2 {
-    enabled  = true
     allow_fs = true
   }
 }
@@ -48,7 +45,6 @@ resource "nomad_job" "http" {
   detach  = false
 
   hcl2 {
-    enabled  = true
     allow_fs = true
   }
 }

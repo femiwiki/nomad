@@ -2,7 +2,6 @@ resource "nomad_job" "plugin-ebs-controller" {
   jobspec = file("../jobs/plugin-ebs-controller.nomad")
 
   hcl2 {
-    enabled  = true
     allow_fs = true
   }
 }
@@ -11,7 +10,6 @@ resource "nomad_job" "plugin-ebs-nodes" {
   jobspec = file("../jobs/plugin-ebs-nodes.nomad")
 
   hcl2 {
-    enabled  = true
     allow_fs = true
   }
 }
