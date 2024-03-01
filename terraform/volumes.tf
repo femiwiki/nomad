@@ -19,9 +19,12 @@ data "nomad_plugin" "ebs" {
   wait_for_healthy = true
 }
 
-resource "nomad_volume" "mysql" {
+import {
+  id = "mysql@default"
+  to = nomad_csi_volume_registration.mysql
+}
+resource "nomad_csi_volume_registration" "mysql" {
   depends_on  = [data.nomad_plugin.ebs]
-  type        = "csi"
   plugin_id   = "aws-ebs0"
   volume_id   = "mysql"
   name        = "mysql"
@@ -33,9 +36,12 @@ resource "nomad_volume" "mysql" {
   }
 }
 
-resource "nomad_volume" "caddycerts" {
+import {
+  id = "caddycerts@default"
+  to = nomad_csi_volume_registration.caddycerts
+}
+resource "nomad_csi_volume_registration" "caddycerts" {
   depends_on  = [data.nomad_plugin.ebs]
-  type        = "csi"
   plugin_id   = "aws-ebs0"
   volume_id   = "caddycerts"
   name        = "caddycerts"
