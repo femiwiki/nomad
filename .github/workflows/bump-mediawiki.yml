@@ -2,14 +2,14 @@ name: Bump MW
 
 on:
   repository_dispatch:
-    types: [bump-mediawiki]
+    types: [bump-femiwiki]
   workflow_dispatch:
     inputs:
       tag:
         type: string
 
 jobs:
-  bump-mediawiki:
+  bump-femiwiki:
     concurrency:
       group: ${{ github.workflow }}
       cancel-in-progress: true
@@ -40,14 +40,14 @@ jobs:
           cd jobs
           hcledit attribute set -f fastcgi.nomad \
             -u job.fastcgi.group.fastcgi.task.fastcgi.config.image \
-          '"ghcr.io/femiwiki/mediawiki:${{fromJSON(steps.vars.outputs.result).tag}}"'
+          '"ghcr.io/femiwiki/femiwiki:${{fromJSON(steps.vars.outputs.result).tag}}"'
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{secrets.BOT_TOKEN}}
-          commit-message: Bump mediawiki docker image
-          title: Bump MediaWiki docker image
+          commit-message: Bump femiwiki docker image
+          title: Bump femiwiki docker image
           body: |
             ### pre-merge
 
