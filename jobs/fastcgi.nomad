@@ -145,19 +145,6 @@ variable "hotfix" {
 
 $wgMWLoggerDefaultSpi = [ 'class' => 'MediaWiki\\Logger\\LegacySpi' ]; # default
 
-// Set when users become autoconfirmed users
-$wgAutoConfirmCount = 0;
-$wgAutoConfirmAge = 3600;
-$wgAutopromote = [
-    'autoconfirmed' => [ '&',
-           [ APCOND_EDITCOUNT, $wgAutoConfirmCount ],
-           [ APCOND_AGE, $wgAutoConfirmAge ],
-    ],
-];
-// Make only autoconfirmed users edit pages
-$wgGroupPermissions['user']['edit'] = false;
-$wgGroupPermissions['autoconfirmed']['edit'] = true;
-
 // Maintenance
 // 점검이 끝나면 아래 라인 주석처리한 뒤, 아래 문서 내용을 비우면 됨
 // https://femiwiki.com/w/%EB%AF%B8%EB%94%94%EC%96%B4%EC%9C%84%ED%82%A4:Sitenotice
