@@ -145,7 +145,7 @@ variable "hotfix" {
 
 $wgMWLoggerDefaultSpi = [ 'class' => 'MediaWiki\\Logger\\LegacySpi' ]; # default
 $wgLogSpamBlacklistHits = true;
-$wgGroupPermissions['*']['spamblacklist'] = false;
+$wgGroupPermissions['user']['spamblacklist'] = false;
 $wgGroupPermissions['sysop']['spamblacklist'] = true;
 
 // Maintenance
