@@ -16,7 +16,7 @@ jobs:
         run: |
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
           sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-          sudo apt-get update && sudo apt-get install -y nomad consul
+          sudo apt-get update && sudo apt-get install -y nomad=1.7.5-1 consul
           echo "nomad_version: $(nomad -v)"
           echo "consul_version: $(consul -v)"
 
