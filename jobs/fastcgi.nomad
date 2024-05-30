@@ -143,10 +143,8 @@ variable "hotfix" {
  * @file
  */
 
+$wgUnifiedExtensionForFemiwikiBlockByEmail = false;
 $wgMWLoggerDefaultSpi = [ 'class' => 'MediaWiki\\Logger\\LegacySpi' ]; # default
-$wgLogSpamBlacklistHits = true;
-$wgGroupPermissions['user']['spamblacklistlog'] = false;
-$wgGroupPermissions['sysop']['spamblacklistlog'] = true;
 
 // Maintenance
 // 점검이 끝나면 아래 라인 주석처리한 뒤, 아래 문서 내용을 비우면 됨
