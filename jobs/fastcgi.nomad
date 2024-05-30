@@ -143,7 +143,6 @@ variable "hotfix" {
  * @file
  */
 
-$wgUnifiedExtensionForFemiwikiBlockByEmail = false;
 $wgMWLoggerDefaultSpi = [ 'class' => 'MediaWiki\\Logger\\LegacySpi' ]; # default
 
 // Maintenance
