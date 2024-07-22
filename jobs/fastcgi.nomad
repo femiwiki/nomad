@@ -157,6 +157,9 @@ variable "hotfix" {
  * @file
  */
 
+$wgScribuntoEngineConf['luastandalone']['cpuLimit'] = 1;
+$wgScribuntoEngineConf['luastandalone']['memoryLimit'] = 10485760;
+
 $wgMWLoggerDefaultSpi = [ 'class' => 'MediaWiki\\Logger\\LegacySpi' ]; # default
 # https://github.com/femiwiki/UnifiedExtensionForFemiwiki/issues/147
 $wgUnifiedExtensionForFemiwikiBlockByEmail = false;
