@@ -16,8 +16,8 @@ job "fastcgi" {
         args = [
           "-c",
           join(";", [
-            "while ! ncat --send-only 127.0.0.1 3306 < /dev/null; do sleep 1; done",
-            "while ! ncat --send-only 127.0.0.1 11211 < /dev/null; do sleep 1; done"
+            "while ! ncat --send-only ${NOMAD_UPSTREAM_IP_mysql} ${NOMAD_UPSTREAM_PORT_mysql} < /dev/null; do sleep 1; done",
+            "while ! ncat --send-only ${NOMAD_UPSTREAM_IP_memcached} ${NOMAD_UPSTREAM_PORT_memcached} < /dev/null; do sleep 1; done"
           ])
         ]
       }
@@ -118,8 +118,6 @@ job "fastcgi" {
         ]
 
         cpu_hard_limit = true
-
-        network_mode = "host"
       }
 
       resources {
@@ -129,11 +127,43 @@ job "fastcgi" {
       }
 
       env {
-        NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:80"
-        NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
-        MEDIAWIKI_SKIP_INSTALL        = "1"
-        MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-        MEDIAWIKI_SKIP_UPDATE         = "1"
+        MEDIAWIKI_SKIP_INSTALL      = "1"
+        MEDIAWIKI_SKIP_IMPORT_SITES = "1"
+        MEDIAWIKI_SKIP_UPDATE       = "1"
+      }
+    }
+
+    network {
+      mode = "bridge"
+    }
+
+    service {
+      name = "fastcgi"
+      port = "9000"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "mysql"
+              local_bind_port  = 3306
+            }
+
+            upstreams {
+              destination_name = "memcached"
+              local_bind_port  = 11211
+            }
+          }
+        }
+
+        sidecar_task {
+          config {
+            memory_hard_limit = 300
+          }
+          resources {
+            memory = 20
+          }
+        }
       }
     }
   }
@@ -146,7 +176,12 @@ job "fastcgi" {
   }
 
   update {
-    auto_revert = true
+    max_parallel = 1
+    health_check = "checks"
+    auto_revert  = true
+    auto_promote = true
+    # canary count equal to the desired count allows a Nomad job to model blue/green deployments
+    canary = 1
   }
 }
 
@@ -194,4 +229,3 @@ set -euo pipefail; IFS=$'\n\t'
 
 EOF
 }
-

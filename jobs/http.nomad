@@ -68,7 +68,44 @@ job "http" {
 
       env {
         CADDYPATH    = "/etc/caddycerts"
-        FASTCGI_ADDR = "127.0.0.1:9000"
+        FASTCGI_ADDR = NOMAD_UPSTREAM_ADDR_fastcgi
+      }
+    }
+
+    network {
+      mode = "bridge"
+
+      port "http" {
+        static = 80
+      }
+
+      port "https" {
+        static = 443
+      }
+    }
+
+    service {
+      name = "http"
+      port = "80"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "fastcgi"
+              local_bind_port  = 9000
+            }
+          }
+        }
+
+        sidecar_task {
+          config {
+            memory_hard_limit = 500
+          }
+          resources {
+            memory = 20
+          }
+        }
       }
     }
 

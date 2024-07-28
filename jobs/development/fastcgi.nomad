@@ -74,8 +74,6 @@ job "fastcgi" {
         ]
 
         cpu_hard_limit = true
-
-        network_mode = "host"
       }
 
       resources {
@@ -85,14 +83,45 @@ job "fastcgi" {
       }
 
       env {
-        NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:8080"
-        NOMAD_UPSTREAM_ADDR_mysql     = "127.0.0.1:3306"
-        NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
-        MEDIAWIKI_DEBUG_MODE          = "1"
-        MEDIAWIKI_SERVER              = "http://localhost:8080"
+        MEDIAWIKI_DEBUG_MODE = "1"
+        MEDIAWIKI_SERVER     = "http://localhost:8080"
         # MEDIAWIKI_SKIP_INSTALL        = "1"
         # MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
         # MEDIAWIKI_SKIP_UPDATE         = "1"
+      }
+    }
+
+    network {
+      mode = "bridge"
+    }
+
+    service {
+      name = "fastcgi"
+      port = "9000"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "mysql"
+              local_bind_port  = 3306
+            }
+
+            upstreams {
+              destination_name = "memcached"
+              local_bind_port  = 11211
+            }
+          }
+        }
+
+        sidecar_task {
+          config {
+            memory_hard_limit = 300
+          }
+          resources {
+            memory = 32
+          }
+        }
       }
     }
   }

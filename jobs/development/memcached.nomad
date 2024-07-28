@@ -16,9 +16,23 @@ job "memcached" {
 
     network {
       mode = "bridge"
+    }
 
-      port "memcached" {
-        static = 11211
+    service {
+      name = "memcached"
+      port = "11211"
+
+      connect {
+        sidecar_service {}
+
+        sidecar_task {
+          config {
+            memory_hard_limit = 300
+          }
+          resources {
+            memory = 30
+          }
+        }
       }
     }
   }
