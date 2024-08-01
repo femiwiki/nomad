@@ -117,10 +117,13 @@ job "fastcgi" {
           },
         ]
 
+        cpu_hard_limit = true
+
         network_mode = "host"
       }
 
       resources {
+        cpu        = 3000
         memory     = 400
         memory_max = 800
       }
