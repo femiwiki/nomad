@@ -3,7 +3,7 @@ data_dir   = "/opt/consul"
 
 server           = true
 node_name        = "femiwiki"
-bind_addr        = "{{GetInterfaceIP \"eth0\"}}"
+bind_addr        = "{{GetInterfaceIP \"ens5\"}}"
 bootstrap        = true
 bootstrap_expect = 1
 # Cloud Auto-join, but disabled because we have only one node now.
