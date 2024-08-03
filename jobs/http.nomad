@@ -2,22 +2,22 @@ job "http" {
   datacenters = ["dc1"]
 
   group "http" {
-    volume "caddycerts" {
-      type            = "csi"
-      source          = "caddycerts"
-      read_only       = false
-      access_mode     = "single-node-writer"
-      attachment_mode = "file-system"
-    }
+    # volume "caddycerts" {
+    #   type            = "csi"
+    #   source          = "caddycerts"
+    #   read_only       = false
+    #   access_mode     = "single-node-writer"
+    #   attachment_mode = "file-system"
+    # }
 
     task "http" {
       driver = "docker"
 
-      volume_mount {
-        volume      = "caddycerts"
-        destination = "/etc/caddycerts"
-        read_only   = false
-      }
+      # volume_mount {
+      #   volume      = "caddycerts"
+      #   destination = "/etc/caddycerts"
+      #   read_only   = false
+      # }
 
       artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"

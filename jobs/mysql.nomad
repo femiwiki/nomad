@@ -2,22 +2,22 @@ job "mysql" {
   datacenters = ["dc1"]
 
   group "mysql" {
-    volume "mysql" {
-      type            = "csi"
-      source          = "mysql"
-      read_only       = false
-      access_mode     = "single-node-writer"
-      attachment_mode = "file-system"
-    }
+    # volume "mysql" {
+    #   type            = "csi"
+    #   source          = "mysql"
+    #   read_only       = false
+    #   access_mode     = "single-node-writer"
+    #   attachment_mode = "file-system"
+    # }
 
     task "mysql" {
       driver = "docker"
 
-      volume_mount {
-        volume      = "mysql"
-        destination = "/srv/mysql"
-        read_only   = false
-      }
+      # volume_mount {
+      #   volume      = "mysql"
+      #   destination = "/srv/mysql"
+      #   read_only   = false
+      # }
 
       artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/mysql/my.cnf"
