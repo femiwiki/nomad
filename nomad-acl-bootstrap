@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail; IFS=$'\n\t'
 
+sudo -v
+
 # Wait Nomad
 until nomad acl policy list > /dev/null; do
   sleep 1; done;
