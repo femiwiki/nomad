@@ -30,3 +30,17 @@ plugin "docker" {
     }
   }
 }
+
+consul {
+  address = "127.0.0.1:8500"
+
+  service_identity {
+    aud = ["consul.io"]
+    ttl = "1h"
+  }
+
+  task_identity {
+    aud = ["consul.io"]
+    ttl = "1h"
+  }
+}
