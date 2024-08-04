@@ -1,6 +1,10 @@
 datacenter = "dc1"
 data_dir   = "/opt/consul"
 
+acl {
+  enabled = true
+}
+
 server           = true
 node_name        = "femiwiki"
 bind_addr        = "{{GetInterfaceIP \"ens5\"}}"
