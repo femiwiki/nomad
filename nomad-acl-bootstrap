@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail; IFS=$'\n\t'
+set -euxo pipefail; IFS=$'\n\t'
 
 sudo -v
 
@@ -7,16 +7,10 @@ sudo -v
 until nomad acl policy list > /dev/null; do
   sleep 1; done;
 
-NOMAD_TOKEN="$(nomad acl bootstrap | tail -n +2 | head -n 1 | awk '{print $4}')"
+NOMAD_ACL_BOOTSTRAP="$(nomad acl bootstrap)"
 
-# Print the token to stdout
-echo "Nomad ACL Secret ID = $NOMAD_TOKEN"
-
-export NOMAD_TOKEN=$NOMAD_TOKEN
+NOMAD_ACCESSOR_ID="$(echo "$NOMAD_ACL_BOOTSTRAP" | grep 'Accessor ID' | rev | cut -d' ' -f1 | rev)"
+NOMAD_TOKEN="$(echo "$NOMAD_ACL_BOOTSTRAP" | grep 'Secret ID' | rev | cut -d' ' -f1 | rev)"
 
 # Write NOMAD_TOKEN as a local file
-echo "$NOMAD_TOKEN" >> "/etc/nomad.d/token"
-
-# .bashrc: Add a step to read the token from the local file
-cat <<< 'export NOMAD_TOKEN=$(sudo cat /etc/nomad.d/token)' >> "/root/.bashrc"
-cat <<< 'export NOMAD_TOKEN=$(sudo cat /etc/nomad.d/token)' >> "/home/ec2-user/.bashrc"
+echo "NOMAD_TOKEN=$NOMAD_TOKEN" >> "/etc/environment"
