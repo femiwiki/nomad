@@ -16,9 +16,23 @@ job "memcached" {
 
     network {
       mode = "bridge"
+    }
 
-      port "memcached" {
-        static = 11211
+    service {
+      name = "memcached"
+      port = "11211"
+
+      connect {
+        sidecar_service {}
+
+        sidecar_task {
+          config {
+            memory_hard_limit = 300
+          }
+          resources {
+            memory = 20
+          }
+        }
       }
     }
   }
@@ -31,6 +45,11 @@ job "memcached" {
   }
 
   update {
-    auto_revert = true
+    max_parallel = 1
+    health_check = "checks"
+    auto_revert  = true
+    auto_promote = true
+    # canary count equal to the desired count allows a Nomad job to model blue/green deployments
+    canary = 1
   }
 }

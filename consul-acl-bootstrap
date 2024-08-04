@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euxo pipefail; IFS=$'\n\t'
+
+sudo -v
+
+# Wait Consul
+until consul members > /dev/null; do
+  sleep 1; done;
+
+CONSUL_ACL_BOOTSTRAP="$(consul acl bootstrap)"
+
+CONSUL_ACCESSOR_ID="$(echo "$CONSUL_ACL_BOOTSTRAP" | grep AccessorID | rev | cut -d' ' -f1 | rev)"
+CONSUL_TOKEN="$(echo "$CONSUL_ACL_BOOTSTRAP" | grep SecretID | rev | cut -d' ' -f1 | rev)"
+
+# Write CONSUL_TOKEN as a local file
+echo "CONSUL_HTTP_TOKEN=$CONSUL_TOKEN" >> "/etc/environment"

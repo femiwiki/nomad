@@ -27,6 +27,11 @@ job "backupbot" {
     }
   }
 
+  network {
+    # todo change to host or add an upstream to connect to database
+    mode = "bridge"
+  }
+
   reschedule {
     attempts  = 1
     interval  = "24h"

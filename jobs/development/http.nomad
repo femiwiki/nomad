@@ -6,9 +6,9 @@ variable "caddyfile_for_dev" {
   auto_https off
   order mwcache before rewrite
 }
-http://127.0.0.1:8080 http://localhost:8080
+http://127.0.0.1:{$NOMAD_HOST_PORT_http} http://localhost:{$NOMAD_HOST_PORT_http}
 root * /srv/femiwiki.com
-php_fastcgi 127.0.0.1:9000
+php_fastcgi {$NOMAD_UPSTREAM_ADDR_fastcgi}
 file_server
 encode gzip
 mwcache {
@@ -58,8 +58,6 @@ job "http" {
         command = "caddy"
         args    = ["run"]
 
-        network_mode = "host"
-
         volumes = [
           # Overwrite production Caddyfile
           "local/Caddyfile:/srv/femiwiki.com/Caddyfile"
@@ -92,6 +90,43 @@ job "http" {
       resources {
         memory     = 100
         memory_max = 400
+      }
+    }
+
+    network {
+      mode = "bridge"
+
+      port "http" {
+        static = 80
+      }
+
+      port "https" {
+        static = 443
+      }
+    }
+
+    service {
+      name = "http"
+      port = "80"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "fastcgi"
+              local_bind_port  = 9000
+            }
+          }
+        }
+
+        sidecar_task {
+          config {
+            memory_hard_limit = 500
+          }
+          resources {
+            memory = 300
+          }
+        }
       }
     }
   }
