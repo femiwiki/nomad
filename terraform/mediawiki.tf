@@ -1,4 +1,24 @@
+locals {
+  hcl_vals = {
+    test = var.test
+  }
+}
+
+resource "nomad_job" "mysql_without_ebs" {
+  count = var.test ? 1 : 0
+
+  jobspec = file("../jobs/mysql.nomad")
+  detach  = false
+
+  hcl2 {
+    allow_fs = true
+    vars     = local.hcl_vals
+  }
+}
+
 resource "nomad_job" "mysql" {
+  count = !var.test ? 1 : 0
+
   depends_on = [
     data.nomad_plugin.ebs,
     nomad_csi_volume_registration.mysql,
@@ -9,6 +29,7 @@ resource "nomad_job" "mysql" {
 
   hcl2 {
     allow_fs = true
+    vars     = local.hcl_vals
   }
 }
 
@@ -32,6 +53,7 @@ resource "nomad_job" "fastcgi" {
 
   hcl2 {
     allow_fs = true
+    vars     = local.hcl_vals
   }
 }
 
@@ -46,5 +68,6 @@ resource "nomad_job" "http" {
 
   hcl2 {
     allow_fs = true
+    vars     = local.hcl_vals
   }
 }

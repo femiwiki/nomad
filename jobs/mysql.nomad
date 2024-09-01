@@ -1,22 +1,37 @@
+variable "test" {
+  type        = bool
+  description = "Uses jobs for the test server. Without CSI"
+  default     = false
+}
+
 job "mysql" {
   datacenters = ["dc1"]
 
   group "mysql" {
-    volume "mysql" {
-      type            = "csi"
-      source          = "mysql"
-      read_only       = false
-      access_mode     = "single-node-writer"
-      attachment_mode = "file-system"
+    dynamic "volume" {
+      for_each = var.test ? [] : [{}]
+      labels   = ["mysql"]
+
+      content {
+        type            = "csi"
+        source          = "mysql"
+        read_only       = false
+        access_mode     = "single-node-writer"
+        attachment_mode = "file-system"
+      }
     }
 
     task "mysql" {
       driver = "docker"
 
-      volume_mount {
-        volume      = "mysql"
-        destination = "/srv/mysql"
-        read_only   = false
+      dynamic "volume_mount" {
+        for_each = var.test ? [] : [{}]
+
+        content {
+          volume      = "mysql"
+          destination = "/srv/mysql"
+          read_only   = false
+        }
       }
 
       artifact {
@@ -44,9 +59,35 @@ job "mysql" {
 
     network {
       mode = "bridge"
+      dynamic "port" {
+        for_each = var.test ? [] : [{}]
+        labels   = ["network"]
 
-      port "mysql" {
-        static = 3306
+        content {
+          # Accessed by Backupbot
+          static = 3306
+        }
+      }
+    }
+
+    dynamic "service" {
+      for_each = var.test ? [{}] : []
+      content {
+        name = "mysql"
+        port = "3306"
+
+        connect {
+          sidecar_service {}
+
+          sidecar_task {
+            config {
+              memory_hard_limit = 300
+            }
+            resources {
+              memory = 20
+            }
+          }
+        }
       }
     }
   }

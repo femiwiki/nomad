@@ -1,3 +1,9 @@
+variable "test" {
+  type        = bool
+  description = "Uses jobs for the test server. Without certification."
+  default     = false
+}
+
 job "memcached" {
   datacenters = ["dc1"]
 
@@ -17,8 +23,33 @@ job "memcached" {
     network {
       mode = "bridge"
 
-      port "memcached" {
-        static = 11211
+      dynamic "port" {
+        for_each = var.test ? [] : [{}]
+        labels   = ["memcached"]
+        content {
+          static = 11211
+        }
+      }
+    }
+
+    dynamic "service" {
+      for_each = var.test ? [{}] : []
+      content {
+        name = "memcached"
+        port = "11211"
+
+        connect {
+          sidecar_service {}
+
+          sidecar_task {
+            config {
+              memory_hard_limit = 300
+            }
+            resources {
+              memory = 20
+            }
+          }
+        }
       }
     }
   }
@@ -31,6 +62,9 @@ job "memcached" {
   }
 
   update {
-    auto_revert = true
+    auto_revert  = true
+    auto_promote = var.test ? true : false
+    # canary count equal to the desired count allows a Nomad job to model blue/green deployments
+    canary = var.test ? 1 : 0
   }
 }

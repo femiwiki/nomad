@@ -1,10 +1,16 @@
+variable "test" {
+  type        = bool
+  description = "Uses jobs for the test server. Without CSI"
+  default     = false
+}
+
 job "fastcgi" {
   datacenters = ["dc1"]
 
   group "fastcgi" {
     # Init Task Lifecycle
     # Reference: https://www.nomadproject.io/docs/job-specification/lifecycle#init-task-pattern
-    task "wait-for-backend" {
+    task "wait-for-mysql" {
       lifecycle {
         hook    = "prestart"
         sidecar = false
@@ -15,10 +21,30 @@ job "fastcgi" {
         command = "sh"
         args = [
           "-c",
-          join(";", [
-            "while ! ncat --send-only 127.0.0.1 3306 < /dev/null; do sleep 1; done",
-            "while ! ncat --send-only 127.0.0.1 11211 < /dev/null; do sleep 1; done"
-          ])
+          format(
+            "while ! ncat --send-only %s %s < /dev/null; do sleep 1; done",
+            var.test ? NOMAD_UPSTREAM_IP_mysql : "127.0.0.1",
+            var.test ? NOMAD_UPSTREAM_PORT_mysql : "3306"
+          ),
+        ]
+      }
+    }
+
+    task "wait-for-memcached" {
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
+      }
+
+      driver = "exec"
+      config {
+        command = "sh"
+        args = [
+          "-c",
+          format("while ! ncat --send-only %s %s < /dev/null; do sleep 1; done",
+            var.test ? NOMAD_UPSTREAM_IP_memcached : "127.0.0.1",
+            var.test ? NOMAD_UPSTREAM_PORT_memcached : "11211"
+          ),
         ]
       }
     }
@@ -118,8 +144,7 @@ job "fastcgi" {
         ]
 
         cpu_hard_limit = true
-
-        network_mode = "host"
+        network_mode   = var.test ? "bridge" : "host"
       }
 
       resources {
@@ -128,12 +153,70 @@ job "fastcgi" {
         memory_max = 800
       }
 
-      env {
-        NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:80"
-        NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
-        MEDIAWIKI_SKIP_INSTALL        = "1"
-        MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-        MEDIAWIKI_SKIP_UPDATE         = "1"
+      dynamic "env" {
+        for_each = !var.test ? [] : [{}]
+        content {
+          MEDIAWIKI_SKIP_INSTALL      = var.test ? "0" : "1"
+          MEDIAWIKI_SKIP_IMPORT_SITES = "1"
+          MEDIAWIKI_SKIP_UPDATE       = var.test ? "0" : "1"
+        }
+      }
+
+      dynamic "env" {
+        for_each = var.test ? [] : [{}]
+        content {
+          NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:80"
+          NOMAD_UPSTREAM_ADDR_mysql     = "127.0.0.1:3306"
+          NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
+          MEDIAWIKI_SKIP_INSTALL        = var.test ? "0" : "1"
+          MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
+          MEDIAWIKI_SKIP_UPDATE         = var.test ? "0" : "1"
+        }
+      }
+    }
+
+    dynamic "network" {
+      for_each = var.test ? [{}] : []
+      content {
+        mode = "bridge"
+      }
+    }
+
+    dynamic "service" {
+      for_each = !var.test ? [] : [{}]
+
+      content {
+        name = "fastcgi"
+        port = "9000"
+
+        dynamic "connect" {
+          for_each = !var.test ? [] : [{}]
+
+          content {
+            sidecar_service {
+              proxy {
+                upstreams {
+                  destination_name = "mysql"
+                  local_bind_port  = 3306
+                }
+
+                upstreams {
+                  destination_name = "memcached"
+                  local_bind_port  = 11211
+                }
+              }
+            }
+
+            sidecar_task {
+              config {
+                memory_hard_limit = 300
+              }
+              resources {
+                memory = 20
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -146,7 +229,10 @@ job "fastcgi" {
   }
 
   update {
-    auto_revert = true
+    auto_revert  = true
+    auto_promote = var.test ? true : false
+    # canary count equal to the desired count allows a Nomad job to model blue/green deployments
+    canary = var.test ? 1 : 0
   }
 }
 
@@ -194,4 +280,3 @@ set -euo pipefail; IFS=$'\n\t'
 
 EOF
 }
-

@@ -1,3 +1,9 @@
+variable "test" {
+  type        = bool
+  description = "Uses jobs for the test server. Without certification."
+  default     = false
+}
+
 job "http" {
   datacenters = ["dc1"]
 
@@ -19,10 +25,43 @@ job "http" {
         read_only   = false
       }
 
-      artifact {
-        source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
-        destination = "local/Caddyfile"
-        mode        = "file"
+      dynamic "template" {
+        for_each = !var.test ? [] : [{
+          data        = var.caddyfile_for_test
+          destination = "local.Caddyfile"
+        }]
+
+        content {
+          data        = template.value.data
+          destination = template.value.destination
+        }
+      }
+      dynamic "artifact" {
+        for_each = var.test ? [] : [{
+          source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
+          destination = "local/Caddyfile"
+          mode        = "file"
+        }]
+
+        content {
+          source      = artifact.value.source
+          destination = artifact.value.destination
+          mode        = artifact.value.mode
+        }
+      }
+
+      dynamic "artifact" {
+        for_each = var.test ? [] : [{
+          source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
+          destination = "local/Caddyfile"
+          mode        = "file"
+        }]
+        content {
+          source      = artifact.value.source
+          destination = artifact.value.destination
+          mode        = artifact.value.mode
+
+        }
       }
 
       artifact {
@@ -68,7 +107,50 @@ job "http" {
 
       env {
         CADDYPATH    = "/etc/caddycerts"
-        FASTCGI_ADDR = "127.0.0.1:9000"
+        FASTCGI_ADDR = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
+      }
+    }
+
+    dynamic "network" {
+      for_each = var.test ? [{}] : []
+      content {
+        mode = "bridge"
+
+        port "http" {
+          static = 80
+        }
+
+        port "https" {
+          static = 443
+        }
+      }
+    }
+
+    dynamic "service" {
+      for_each = var.test ? [{}] : []
+      content {
+        name = "http"
+        port = "80"
+
+        connect {
+          sidecar_service {
+            proxy {
+              upstreams {
+                destination_name = "fastcgi"
+                local_bind_port  = 9000
+              }
+            }
+          }
+
+          sidecar_task {
+            config {
+              memory_hard_limit = 500
+            }
+            resources {
+              memory = 20
+            }
+          }
+        }
       }
     }
 
@@ -89,4 +171,42 @@ job "http" {
   update {
     auto_revert = true
   }
+}
+
+variable "caddyfile_for_test" {
+  type    = string
+  default = <<EOF
+{
+  # Global options
+  auto_https off
+  order mwcache before rewrite
+}
+http://127.0.0.1:{$NOMAD_HOST_PORT_http} http://localhost:{$NOMAD_HOST_PORT_http}
+root * /srv/femiwiki.com
+php_fastcgi {$NOMAD_UPSTREAM_ADDR_fastcgi}
+file_server
+encode gzip
+mwcache {
+	ristretto {
+		num_counters 100000
+		max_cost 10000
+		buffer_items 64
+	}
+  purge_acl {
+    10.0.0.0/8
+    127.0.0.1
+  }
+}
+header {
+  # Enable XSS filtering for legacy browsers
+  X-XSS-Protection "1; mode=block"
+  # Block content sniffing, and enable Cross-Origin Read Blocking
+  X-Content-Type-Options "nosniff"
+  # Avoid clickjacking
+  X-Frame-Options "DENY"
+}
+rewrite /w/api.php /api.php
+rewrite /w/* /index.php
+
+EOF
 }

@@ -1,3 +1,9 @@
+variable "test" {
+  type        = bool
+  description = "Uses jobs for the test server. Without CSI"
+  default     = false
+}
+
 job "backupbot" {
   datacenters = ["dc1"]
 
@@ -23,6 +29,13 @@ job "backupbot" {
 
       resources {
         memory = 100
+      }
+    }
+
+    dynamic "network" {
+      for_each = var.test ? [{}] : []
+      content {
+        mode = "bridge"
       }
     }
   }
