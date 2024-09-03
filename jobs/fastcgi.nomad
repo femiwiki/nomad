@@ -278,5 +278,6 @@ variable "pretrun" {
 #!/bin/bash
 set -euo pipefail; IFS=$'\n\t'
 
+test -s /a/secret.php
 EOF
 }

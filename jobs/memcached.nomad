@@ -33,6 +33,20 @@ job "memcached" {
     }
 
     dynamic "service" {
+      for_each = var.test ? [] : [{}]
+      content {
+        provider = "nomad"
+        name     = "memcached"
+        port     = "memcached"
+        check {
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "1s"
+        }
+      }
+    }
+
+    dynamic "service" {
       for_each = var.test ? [{}] : []
       content {
         name = "memcached"
