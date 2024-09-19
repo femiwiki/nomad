@@ -250,6 +250,11 @@ $wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 3;
 $wgScribuntoEngineConf['luasandbox']['memoryLimit'] = 52428800; # 50 MiB
 
 $wgMWLoggerDefaultSpi = [ 'class' => 'MediaWiki\\Logger\\LegacySpi' ]; # default
+
+$wgAbuseFilterEnableBlockedExternalDomain = true;
+$wgGroupPermissions['abusefilter']['abusefilter-modify-blocked-external-domains'] = true;
+$wgGroupPermissions['abusefilter']['abusefilter-bypass-blocked-external-domains'] = true;
+
 # https://github.com/femiwiki/UnifiedExtensionForFemiwiki/issues/147
 $wgUnifiedExtensionForFemiwikiBlockByEmail = false;
 
