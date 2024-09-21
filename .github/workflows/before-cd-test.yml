@@ -33,15 +33,8 @@ jobs:
           sudo nomad agent -dev-connect -config nomad/development.hcl &>/dev/null &
           consul agent -dev -bootstrap &>/dev/null &
 
-      - name: Validate job files
-        run: |
-          shopt -s globstar
-          for job in **/*.nomad; do
-            nomad job validate "$job";
-          done
-
       - name: Wait for initializing...
-        timeout-minutes: 3
+        timeout-minutes: 5
         run: |
           RETRY=$((SECONDS+60))
           until nomad node status > /dev/null; do
@@ -52,7 +45,14 @@ jobs:
               RETRY=$((SECONDS+60))
             fi
             sleep 1
-          done;
+          done
+
+      - name: Validate job files
+        run: |
+          shopt -s globstar
+          for job in **/*.nomad; do
+            nomad job validate "$job";
+          done
 
       - name: Run a Nomad job
         run: |
@@ -61,7 +61,7 @@ jobs:
           done
 
       - name: Access MediaWiki until success
-        timeout-minutes: 5
+        timeout-minutes: 3
         run: |
           echo 'Waiting for http...'
           until curl -sLfo /dev/null localhost:8080; do
