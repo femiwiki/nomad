@@ -246,6 +246,8 @@ variable "hotfix" {
  * @file
  */
 
+$wgBlockTargetMigrationStage = SCHEMA_COMPAT_WRITE_BOTH | SCHEMA_COMPAT_READ_OLD;
+
 $wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 3;
 $wgScribuntoEngineConf['luasandbox']['memoryLimit'] = 52428800; # 50 MiB
 
