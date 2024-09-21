@@ -12,6 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: setup-cni
+        run: |
+          export ARCH_CNI=$( [ $(uname -m) = aarch64 ] && echo arm64 || echo amd64)
+          export CNI_PLUGIN_VERSION=v1.4.0
+          curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/${CNI_PLUGIN_VERSION}/cni-plugins-linux-${ARCH_CNI}-${CNI_PLUGIN_VERSION}".tgz
+          sudo mkdir -p /opt/cni/bin
+          sudo tar -C /opt/cni/bin -xzf cni-plugins.tgz
+
       - name: Install Nomad and Consul
         run: |
           curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
