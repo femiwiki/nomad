@@ -28,6 +28,11 @@ jobs:
           echo "nomad_version: $(nomad -v)"
           echo "consul_version: $(consul -v)"
 
+      - name: Start a Nomad Agent and a Consul agent
+        run: |
+          sudo nomad agent -dev-connect -config nomad/development.hcl &>/dev/null &
+          consul agent -dev -bootstrap &>/dev/null &
+
       - name: Validate job files
         run: |
           shopt -s globstar
@@ -35,13 +40,8 @@ jobs:
             nomad job validate "$job";
           done
 
-      - name: Start a Nomad Agent and a Consul agent
-        run: |
-          sudo nomad agent -dev-connect -config nomad/development.hcl &>/dev/null &
-          consul agent -dev -bootstrap &>/dev/null &
-
       - name: Wait for initializing...
-        timeout-minutes: 5
+        timeout-minutes: 3
         run: |
           RETRY=$((SECONDS+60))
           until nomad node status > /dev/null; do
