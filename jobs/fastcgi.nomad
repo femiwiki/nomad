@@ -257,6 +257,12 @@ $wgAbuseFilterEnableBlockedExternalDomain = true;
 $wgGroupPermissions['abusefilter']['abusefilter-modify-blocked-external-domains'] = true;
 $wgGroupPermissions['abusefilter']['abusefilter-bypass-blocked-external-domains'] = true;
 
+$wgAutoConfirmAge = 3600;
+$wgGroupPermissions['*']['flow-hide'] = false;
+$wgGroupPermissions['*']['flow-lock'] = false;
+$wgGroupPermissions['autoconfirmed']['flow-hide'] = true;
+$wgGroupPermissions['autoconfirmed']['flow-lock'] = true;
+
 $wgBlacklistSettings = [
 	'spam' => [
 		'files' => [
