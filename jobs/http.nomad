@@ -68,6 +68,8 @@ job "http" {
         source      = "https://github.com/femiwiki/nomad/raw/main/res/robots.txt"
         destination = "local/robots.txt"
         mode        = "file"
+
+        options { checksum = "md5:0f781bd4d8e87bbc4701a955ef319045" }
       }
 
       config {
