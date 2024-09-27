@@ -26,41 +26,22 @@ job "http" {
       }
 
       dynamic "template" {
-        for_each = !var.test ? [] : [{
+        for_each = !var.test ? [] : [{}]
+
+        content {
           data        = var.caddyfile_for_test
           destination = "local.Caddyfile"
-        }]
-
-        content {
-          data        = template.value.data
-          destination = template.value.destination
         }
       }
       dynamic "artifact" {
-        for_each = var.test ? [] : [{
+        for_each = var.test ? [] : [{}]
+
+        content {
           source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
           destination = "local/Caddyfile"
           mode        = "file"
-        }]
 
-        content {
-          source      = artifact.value.source
-          destination = artifact.value.destination
-          mode        = artifact.value.mode
-        }
-      }
-
-      dynamic "artifact" {
-        for_each = var.test ? [] : [{
-          source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
-          destination = "local/Caddyfile"
-          mode        = "file"
-        }]
-        content {
-          source      = artifact.value.source
-          destination = artifact.value.destination
-          mode        = artifact.value.mode
-
+          options { checksum = "md5:ee0300e384afa6aca74f09a44323ee6e" }
         }
       }
 

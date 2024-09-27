@@ -50,10 +50,16 @@ rewrite /w/* /index.php
 	path /
 	vars_regexp {query} ^[A-Z]{5}=[A-Z]{3}$
 }
+@filter2 {
+	header User-Agent *ClaudeBot*
+}
 
 respond @filter0 200 {
 	close
 }
 respond @filter1 200 {
+	close
+}
+respond @filter2 200 {
 	close
 }
