@@ -1,9 +1,3 @@
-locals {
-  main_hcl_vals = {
-    test = false
-  }
-}
-
 resource "nomad_job" "mysql" {
   depends_on = [
     data.nomad_plugin.ebs,
@@ -15,7 +9,6 @@ resource "nomad_job" "mysql" {
 
   hcl2 {
     allow_fs = true
-    vars     = local.main_hcl_vals
   }
 }
 
@@ -25,7 +18,6 @@ resource "nomad_job" "memcached" {
 
   hcl2 {
     allow_fs = true
-    vars     = local.main_hcl_vals
   }
 }
 
@@ -53,7 +45,6 @@ resource "nomad_job" "fastcgi" {
 
   hcl2 {
     allow_fs = true
-    vars     = local.main_hcl_vals
   }
 }
 
@@ -87,7 +78,6 @@ resource "nomad_job" "http" {
 
   hcl2 {
     allow_fs = true
-    vars     = local.main_hcl_vals
   }
 }
 
