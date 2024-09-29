@@ -83,11 +83,12 @@ resource "nomad_job" "http" {
 
 resource "nomad_job" "test_http" {
   provider = nomad.test
-  depends_on = [
-    # TODO Replace with S3 CSI or something
-    # data.nomad_plugin.ebs,
-    # nomad_csi_volume_registration.caddycerts,
-  ]
+  # TODO Replace EBS CSI with S3 CSI or something
+  count = 0
+  # depends_on = [
+  #   data.nomad_plugin.ebs,
+  #   nomad_csi_volume_registration.caddycerts,
+  # ]
 
   jobspec = file("../jobs/http.nomad")
   detach  = false
