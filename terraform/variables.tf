@@ -1,5 +1,4 @@
-variable "test" {
-  type        = bool
-  description = "Uses jobs for the test server. Without CSI, backup, certificates etc"
-  default     = false
+variable "mysql_password_mediawiki" {
+  type      = string
+  sensitive = true
 }

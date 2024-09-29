@@ -4,6 +4,16 @@ variable "test" {
   default     = false
 }
 
+variable "main_nomad_addr" {
+  type    = string
+  default = ""
+}
+
+variable "mysql_password_mediawiki" {
+  type    = string
+  default = ""
+}
+
 job "fastcgi" {
   datacenters = ["dc1"]
 
@@ -95,7 +105,7 @@ job "fastcgi" {
       }
 
       template {
-        data        = var.hotfix
+        data        = var.test ? var.hotfix_test : var.hotfix
         destination = "local/Hotfix.php"
         change_mode = "noop"
       }
@@ -283,6 +293,16 @@ $wgBlacklistSettings = [
 
 // 업로드를 막고싶을때엔 아래 라인 주석 해제하면 됨
 // $wgEnableUploads = false;
+EOF
+}
+
+variable "hotfix_test" {
+  type    = string
+  default = <<EOF
+<?php
+$wgDBserver = '$${var.main_nomad_addr}';
+$wgDBuser = 'mediawiki';
+$wgDBpassword = '$${var.mysql_password_mediawiki}';
 EOF
 }
 
