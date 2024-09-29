@@ -8,6 +8,11 @@ variable "test_nomad_token" {
   sensitive = true
 }
 
+variable "test_consul_token" {
+  type      = string
+  sensitive = true
+}
+
 terraform {
   required_version = "~> 1.0"
 
@@ -45,9 +50,10 @@ provider "nomad" {
 }
 
 provider "nomad" {
-  alias     = "test"
-  address   = data.terraform_remote_state.aws.outputs.test_nomad_addr
-  secret_id = var.test_nomad_token
+  alias        = "test"
+  address      = data.terraform_remote_state.aws.outputs.test_nomad_addr
+  secret_id    = var.test_nomad_token
+  consul_token = var.test_consul_token
   # Should be specified explicitly because of the bug https://github.com/femiwiki/nomad/issues/99
   region = "global"
 }
