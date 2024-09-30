@@ -1,6 +1,6 @@
 variable "test" {
   type        = bool
-  description = "Uses jobs for the test server. Without certification."
+  description = "Uses jobs for the test server.."
   default     = false
 }
 
