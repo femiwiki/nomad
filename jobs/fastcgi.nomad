@@ -268,10 +268,15 @@ $wgGroupPermissions['abusefilter']['abusefilter-modify-blocked-external-domains'
 $wgGroupPermissions['abusefilter']['abusefilter-bypass-blocked-external-domains'] = true;
 
 $wgAutoConfirmAge = 3600;
-$wgGroupPermissions['*']['flow-hide'] = false;
-$wgGroupPermissions['*']['flow-lock'] = false;
+$wgGroupPermissions['user']['flow-hide'] = false;
+$wgGroupPermissions['user']['flow-lock'] = false;
+$wgGroupPermissions['user']['editcontentmodel'] = false;
+$wgGroupPermissions['user']['move'] = false;
 $wgGroupPermissions['autoconfirmed']['flow-hide'] = true;
 $wgGroupPermissions['autoconfirmed']['flow-lock'] = true;
+$wgGroupPermissions['autoconfirmed']['editcontentmodel'] = true;
+$wgGroupPermissions['autoconfirmed']['move'] = true;
+$wgGroupPermissions['rollbacker']['rollbacker'] = true;
 
 $wgBlacklistSettings = [
 	'spam' => [
