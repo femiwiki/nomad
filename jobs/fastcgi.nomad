@@ -276,7 +276,7 @@ $wgGroupPermissions['autoconfirmed']['flow-hide'] = true;
 $wgGroupPermissions['autoconfirmed']['flow-lock'] = true;
 $wgGroupPermissions['autoconfirmed']['editcontentmodel'] = true;
 $wgGroupPermissions['autoconfirmed']['move'] = true;
-$wgGroupPermissions['rollbacker']['rollbacker'] = true;
+$wgGroupPermissions['rollbacker']['rollback'] = true;
 
 $wgBlacklistSettings = [
 	'spam' => [
