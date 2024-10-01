@@ -4,6 +4,10 @@ variable "test" {
   default     = false
 }
 
+locals {
+  main = !var.test
+}
+
 job "http" {
   datacenters = ["dc1"]
 
@@ -24,17 +28,8 @@ job "http" {
         destination = "/etc/caddycerts"
         read_only   = false
       }
-
-      dynamic "template" {
-        for_each = !var.test ? [] : [{}]
-
-        content {
-          data        = var.caddyfile_for_test
-          destination = "local.Caddyfile"
-        }
-      }
       dynamic "artifact" {
-        for_each = var.test ? [] : [{}]
+        for_each = local.main ? [{}] : []
 
         content {
           source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
@@ -42,6 +37,14 @@ job "http" {
           mode        = "file"
 
           options { checksum = "md5:ee0300e384afa6aca74f09a44323ee6e" }
+        }
+      }
+      dynamic "template" {
+        for_each = var.test ? [{}] : []
+
+        content {
+          data        = var.caddyfile_for_test
+          destination = "local.Caddyfile"
         }
       }
 

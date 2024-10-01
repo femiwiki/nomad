@@ -4,6 +4,10 @@ variable "test" {
   default     = false
 }
 
+locals {
+  main = !var.test
+}
+
 job "memcached" {
   datacenters = ["dc1"]
 
@@ -33,7 +37,7 @@ job "memcached" {
     }
 
     dynamic "service" {
-      for_each = var.test ? [] : [{}]
+      for_each = local.main ? [{}] : []
       content {
         provider = "nomad"
         name     = "memcached"

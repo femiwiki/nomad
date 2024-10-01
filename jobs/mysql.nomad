@@ -4,12 +4,16 @@ variable "test" {
   default     = false
 }
 
+locals {
+  main = !var.test
+}
+
 job "mysql" {
   datacenters = ["dc1"]
 
   group "mysql" {
     dynamic "volume" {
-      for_each = var.test ? [] : [{}]
+      for_each = local.main ? [{}] : []
       labels   = ["mysql"]
 
       content {
@@ -25,7 +29,7 @@ job "mysql" {
       driver = "docker"
 
       dynamic "volume_mount" {
-        for_each = var.test ? [] : [{}]
+        for_each = local.main ? [{}] : []
 
         content {
           volume      = "mysql"
@@ -60,7 +64,7 @@ job "mysql" {
     network {
       mode = "bridge"
       dynamic "port" {
-        for_each = var.test ? [] : [{}]
+        for_each = local.main ? [{}] : []
         labels   = ["network"]
 
         content {

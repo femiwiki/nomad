@@ -14,6 +14,10 @@ variable "mysql_password_mediawiki" {
   default = ""
 }
 
+locals {
+  main = !var.test
+}
+
 job "fastcgi" {
   datacenters = ["dc1"]
 
@@ -33,8 +37,8 @@ job "fastcgi" {
           "-c",
           format(
             "while ! ncat --send-only %s %s < /dev/null; do sleep 1; done",
-            var.test ? NOMAD_UPSTREAM_IP_mysql : "127.0.0.1",
-            var.test ? NOMAD_UPSTREAM_PORT_mysql : "3306"
+            local.main ? "127.0.0.1" : NOMAD_UPSTREAM_IP_mysql,
+            local.main ? "3306" : NOMAD_UPSTREAM_PORT_mysql
           ),
         ]
       }
@@ -52,8 +56,8 @@ job "fastcgi" {
         args = [
           "-c",
           format("while ! ncat --send-only %s %s < /dev/null; do sleep 1; done",
-            var.test ? NOMAD_UPSTREAM_IP_memcached : "127.0.0.1",
-            var.test ? NOMAD_UPSTREAM_PORT_memcached : "11211"
+            local.main ? "127.0.0.1" : NOMAD_UPSTREAM_IP_memcached,
+            local.main ? "11211" : NOMAD_UPSTREAM_PORT_memcached
           ),
         ]
       }
@@ -105,7 +109,7 @@ job "fastcgi" {
       }
 
       template {
-        data        = var.test ? var.hotfix_test : var.hotfix
+        data        = local.main ? var.hotfix : var.hotfix_test
         destination = "local/Hotfix.php"
         change_mode = "noop"
       }
@@ -154,7 +158,7 @@ job "fastcgi" {
         ]
 
         cpu_hard_limit = true
-        network_mode   = var.test ? "bridge" : "host"
+        network_mode   = local.main ? "host" : "bridge"
       }
 
       resources {
@@ -164,23 +168,57 @@ job "fastcgi" {
       }
 
       dynamic "env" {
-        for_each = !var.test ? [] : [{}]
-        content {
-          MEDIAWIKI_SKIP_INSTALL      = var.test ? "0" : "1"
-          MEDIAWIKI_SKIP_IMPORT_SITES = "1"
-          MEDIAWIKI_SKIP_UPDATE       = var.test ? "0" : "1"
-        }
-      }
-
-      dynamic "env" {
-        for_each = var.test ? [] : [{}]
+        for_each = local.main ? [{}] : []
         content {
           NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:80"
           NOMAD_UPSTREAM_ADDR_mysql     = "127.0.0.1:3306"
           NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
-          MEDIAWIKI_SKIP_INSTALL        = var.test ? "0" : "1"
+          MEDIAWIKI_SKIP_INSTALL        = local.main ? "1" : "0"
           MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-          MEDIAWIKI_SKIP_UPDATE         = var.test ? "0" : "1"
+          MEDIAWIKI_SKIP_UPDATE         = local.main ? "1" : "0"
+        }
+      }
+
+      dynamic "env" {
+        for_each = var.test ? [{}] : []
+        content {
+          MEDIAWIKI_SKIP_INSTALL      = local.main ? "1" : "0"
+          MEDIAWIKI_SKIP_IMPORT_SITES = "1"
+          MEDIAWIKI_SKIP_UPDATE       = local.main ? "1" : "0"
+        }
+      }
+    }
+
+    dynamic "service" {
+      for_each = var.test ? [{}] : []
+
+      content {
+        name = "fastcgi"
+        port = "9000"
+
+        connect {
+          sidecar_service {
+            proxy {
+              upstreams {
+                destination_name = "mysql"
+                local_bind_port  = 3306
+              }
+
+              upstreams {
+                destination_name = "memcached"
+                local_bind_port  = 11211
+              }
+            }
+          }
+
+          sidecar_task {
+            config {
+              memory_hard_limit = 300
+            }
+            resources {
+              memory = 20
+            }
+          }
         }
       }
     }
@@ -189,44 +227,6 @@ job "fastcgi" {
       for_each = var.test ? [{}] : []
       content {
         mode = "bridge"
-      }
-    }
-
-    dynamic "service" {
-      for_each = !var.test ? [] : [{}]
-
-      content {
-        name = "fastcgi"
-        port = "9000"
-
-        dynamic "connect" {
-          for_each = !var.test ? [] : [{}]
-
-          content {
-            sidecar_service {
-              proxy {
-                upstreams {
-                  destination_name = "mysql"
-                  local_bind_port  = 3306
-                }
-
-                upstreams {
-                  destination_name = "memcached"
-                  local_bind_port  = 11211
-                }
-              }
-            }
-
-            sidecar_task {
-              config {
-                memory_hard_limit = 300
-              }
-              resources {
-                memory = 20
-              }
-            }
-          }
-        }
       }
     }
   }
