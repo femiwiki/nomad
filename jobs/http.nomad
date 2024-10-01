@@ -53,7 +53,7 @@ job "http" {
         destination = "local/robots.txt"
         mode        = "file"
 
-        options { checksum = "md5:0f781bd4d8e87bbc4701a955ef319045" }
+        options { checksum = "md5:a2f8f6506f487014d8ee3466c3de46aa" }
       }
 
       config {

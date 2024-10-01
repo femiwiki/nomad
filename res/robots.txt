@@ -27,5 +27,12 @@ Disallow: /w/Special:
 Disallow: /w/Special%3A
 Disallow: /w/%ED%8A%B9%EC%88%98:
 Disallow: /w/%ED%8A%B9%EC%88%98%3A
+Disallow: /index.php?title=%ED%8A%B9%EC%88%98:
+Disallow: /index.php?title=%ED%8A%B9%EC%88%98%3A
+
+# https://github.com/femiwiki/nomad/issues/270
+Disallow: /index.php?hidelinks=1&hidetrans=1&title=
+Disallow: /index.php?target=*&title=%ED%8A%B9%EC%88%98:%EA%B0%80%EB%A6%AC%ED%82%A4%EB%8A%94%EB%AC%B8%EC%84%9C
+Disallow: /*&mobileaction=toggle_view_mobile
 
 sitemap:https://femiwiki.com/sitemap/sitemap-index-femiwiki.xml
