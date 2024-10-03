@@ -22,44 +22,101 @@ job "fastcgi" {
   datacenters = ["dc1"]
 
   group "fastcgi" {
+
     # Init Task Lifecycle
     # Reference: https://www.nomadproject.io/docs/job-specification/lifecycle#init-task-pattern
-    task "wait-for-mysql" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
+    dynamic "task" {
+      for_each = local.main ? [{}] : []
+      labels   = ["wait-for-mysql"]
+      content {
+        lifecycle {
+          hook    = "prestart"
+          sidecar = false
+        }
 
-      driver = "exec"
-      config {
-        command = "sh"
-        args = [
-          "-c",
-          format(
-            "while ! ncat --send-only %s %s < /dev/null; do sleep 1; done",
-            local.main ? "127.0.0.1" : NOMAD_UPSTREAM_IP_mysql,
-            local.main ? "3306" : NOMAD_UPSTREAM_PORT_mysql
-          ),
-        ]
+        driver = "exec"
+        config {
+          command = "sh"
+          args = [
+            "-c",
+            "while ! ncat --send-only 127.0.0.1 3306 < /dev/null; do sleep 1; done",
+          ]
+        }
+      }
+    }
+    # Inter-job dependencies with init tasks
+    # https://developer.hashicorp.com/nomad/tutorials/task-deps/task-dependencies-interjob
+    dynamic "task" {
+      for_each = var.test ? [{}] : []
+      labels   = ["await-mysql"]
+      content {
+        lifecycle {
+          hook    = "prestart"
+          sidecar = false
+        }
+
+        driver = "docker"
+        config {
+          image        = "busybox:1.28"
+          command      = "sh"
+          network_mode = "host"
+          args = [
+            "-c",
+            true ? "echo -n 'Waiting for service'; until nc -z ${var.main_nomad_addr} 3306 < /dev/null; do echo '.'; sleep 2; done"
+            : "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done",
+          ]
+        }
+
+        resources {
+          cpu    = 100
+          memory = 100
+        }
       }
     }
 
-    task "wait-for-memcached" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
+    dynamic "task" {
+      for_each = local.main ? [{}] : []
+      labels   = ["wait-for-memcached"]
+      content {
+        lifecycle {
+          hook    = "prestart"
+          sidecar = false
+        }
 
-      driver = "exec"
-      config {
-        command = "sh"
-        args = [
-          "-c",
-          format("while ! ncat --send-only %s %s < /dev/null; do sleep 1; done",
-            local.main ? "127.0.0.1" : NOMAD_UPSTREAM_IP_memcached,
-            local.main ? "11211" : NOMAD_UPSTREAM_PORT_memcached
-          ),
-        ]
+        driver = "exec"
+        config {
+          command = "sh"
+          args = [
+            "-c",
+            "while ! ncat --send-only 127.0.0.1 11211 < /dev/null; do sleep 1; done",
+          ]
+        }
+      }
+    }
+    dynamic "task" {
+      for_each = var.test ? [{}] : []
+      labels   = ["await-memcached"]
+      content {
+        lifecycle {
+          hook    = "prestart"
+          sidecar = false
+        }
+
+        driver = "docker"
+        config {
+          image        = "busybox:1.28"
+          command      = "sh"
+          network_mode = "host"
+          args = [
+            "-c",
+            "echo -n 'Waiting for service'; until nslookup memcached.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done",
+          ]
+        }
+
+        resources {
+          cpu    = 100
+          memory = 100
+        }
       }
     }
 
