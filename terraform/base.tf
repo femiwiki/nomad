@@ -54,6 +54,5 @@ provider "nomad" {
   address      = data.terraform_remote_state.aws.outputs.test_nomad_addr
   secret_id    = var.test_nomad_token
   consul_token = var.test_consul_token
-  # Should be specified explicitly because of the bug https://github.com/femiwiki/nomad/issues/99
-  region = "global"
+  region       = "global"
 }

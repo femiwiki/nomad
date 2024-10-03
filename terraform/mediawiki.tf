@@ -23,6 +23,7 @@ resource "nomad_job" "memcached" {
 
 resource "nomad_job" "test_memcached" {
   provider = nomad.test
+  count    = 0
   jobspec  = file("../jobs/memcached.nomad")
   detach   = false
 
@@ -50,6 +51,7 @@ resource "nomad_job" "fastcgi" {
 
 resource "nomad_job" "test_fastcgi" {
   provider = nomad.test
+  count    = 0
   depends_on = [
     nomad_job.memcached,
   ]
