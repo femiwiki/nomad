@@ -173,18 +173,18 @@ job "fastcgi" {
           NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:80"
           NOMAD_UPSTREAM_ADDR_mysql     = "127.0.0.1:3306"
           NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
-          MEDIAWIKI_SKIP_INSTALL        = local.main ? "1" : "0"
+          MEDIAWIKI_SKIP_INSTALL        = "1"
           MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-          MEDIAWIKI_SKIP_UPDATE         = local.main ? "1" : "0"
+          MEDIAWIKI_SKIP_UPDATE         = "1"
         }
       }
 
       dynamic "env" {
         for_each = var.test ? [{}] : []
         content {
-          MEDIAWIKI_SKIP_INSTALL      = local.main ? "1" : "0"
+          MEDIAWIKI_SKIP_INSTALL      = "0"
           MEDIAWIKI_SKIP_IMPORT_SITES = "1"
-          MEDIAWIKI_SKIP_UPDATE       = local.main ? "1" : "0"
+          MEDIAWIKI_SKIP_UPDATE       = "0"
         }
       }
     }
