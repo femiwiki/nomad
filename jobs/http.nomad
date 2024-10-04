@@ -12,22 +12,30 @@ job "http" {
   datacenters = ["dc1"]
 
   group "http" {
-    volume "caddycerts" {
-      type            = "csi"
-      source          = "caddycerts"
-      read_only       = false
-      access_mode     = "single-node-writer"
-      attachment_mode = "file-system"
+    dynamic "volume" {
+      for_each = local.main ? [{}] : []
+      labels   = ["caddycerts"]
+      content {
+        type            = "csi"
+        source          = "caddycerts"
+        read_only       = false
+        access_mode     = "single-node-writer"
+        attachment_mode = "file-system"
+      }
     }
 
     task "http" {
       driver = "docker"
 
-      volume_mount {
-        volume      = "caddycerts"
-        destination = "/etc/caddycerts"
-        read_only   = false
+      dynamic "volume_mount" {
+        for_each = local.main ? [{}] : []
+        content {
+          volume      = "caddycerts"
+          destination = "/etc/caddycerts"
+          read_only   = false
+        }
       }
+
       dynamic "artifact" {
         for_each = local.main ? [{}] : []
 
@@ -44,7 +52,7 @@ job "http" {
 
         content {
           data        = var.caddyfile_for_test
-          destination = "local.Caddyfile"
+          destination = "local/Caddyfile"
         }
       }
 
@@ -61,7 +69,7 @@ job "http" {
         command = "caddy"
         args    = ["run"]
 
-        network_mode = "host"
+        network_mode = local.main ? "host" : ""
 
         volumes = [
           "local/Caddyfile:/srv/femiwiki.com/Caddyfile",
