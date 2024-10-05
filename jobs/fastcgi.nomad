@@ -215,7 +215,7 @@ job "fastcgi" {
         ]
 
         cpu_hard_limit = true
-        network_mode   = local.main ? "host" : "bridge"
+        network_mode   = local.main ? "host" : ""
       }
 
       resources {
