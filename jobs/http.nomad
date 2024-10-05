@@ -167,7 +167,7 @@ variable "caddyfile_for_test" {
   auto_https off
   order mwcache before rewrite
 }
-http://127.0.0.1:{$NOMAD_HOST_PORT_http} http://localhost:{$NOMAD_HOST_PORT_http}
+http://127.0.0.1:80 http://localhost:80
 root * /srv/femiwiki.com
 php_fastcgi {$NOMAD_UPSTREAM_ADDR_fastcgi}
 file_server
