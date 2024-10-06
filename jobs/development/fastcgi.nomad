@@ -19,7 +19,7 @@ job "fastcgi" {
       driver = "docker"
 
       artifact {
-        source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/development/secret.php.example"
+        source      = "https://raw.githubusercontent.com/femiwiki/docker-mediawiki/main/development/secrets.php.example"
         destination = "secrets/secrets.php"
         mode        = "file"
       }
@@ -59,7 +59,7 @@ job "fastcgi" {
         image = "ghcr.io/femiwiki/femiwiki:latest"
 
         volumes = [
-          "secrets/secrets.php:/a/secret.php",
+          "secrets/secrets.php:/a/secrets.php",
           "local/Hotfix.php:/a/Hotfix.php",
           "local/site-list.xml:/a/site-list.xml",
         ]
@@ -86,8 +86,8 @@ job "fastcgi" {
 
       env {
         NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:8080"
-        NOMAD_UPSTREAM_ADDR_mysql     = "127.0.0.1:3306"
         NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
+        WG_DB_SERVER                  = "127.0.0.1:3306"
         MEDIAWIKI_DEBUG_MODE          = "1"
         MEDIAWIKI_SERVER              = "http://localhost:8080"
         # MEDIAWIKI_SKIP_INSTALL        = "1"
