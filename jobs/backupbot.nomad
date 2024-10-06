@@ -41,9 +41,7 @@ job "backupbot" {
   }
 
   reschedule {
-    attempts  = 1
-    interval  = "24h"
-    unlimited = false
+    unlimited = true
   }
 
   update {
