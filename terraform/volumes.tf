@@ -55,6 +55,7 @@ resource "nomad_csi_volume_registration" "mysql" {
 }
 
 resource "nomad_csi_volume_registration" "mysql_green" {
+  provider    = nomad.green
   plugin_id   = "aws-ebs0"
   volume_id   = "mysql_green"
   name        = "mysql_green"
