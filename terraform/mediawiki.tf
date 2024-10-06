@@ -23,7 +23,6 @@ resource "nomad_job" "memcached" {
 
 resource "nomad_job" "test_memcached" {
   provider = nomad.test
-  count    = 0
   jobspec  = file("../jobs/memcached.nomad")
   detach   = false
 
@@ -51,7 +50,6 @@ resource "nomad_job" "fastcgi" {
 
 resource "nomad_job" "test_fastcgi" {
   provider = nomad.test
-  count    = 0
   depends_on = [
     nomad_job.memcached,
   ]
@@ -66,6 +64,7 @@ resource "nomad_job" "test_fastcgi" {
       main_nomad_addr          = data.terraform_remote_state.aws.outputs.nomad_addr
       mysql_password_mediawiki = var.mysql_password_mediawiki
       test_nomad_addr          = data.terraform_remote_state.aws.outputs.test_nomad_addr
+      test_include_mysql       = false
     }
   }
 }
@@ -87,7 +86,6 @@ resource "nomad_job" "http" {
 resource "nomad_job" "test_http" {
   provider = nomad.test
   # TODO Replace EBS CSI with S3 CSI or something
-  count = 0
   # depends_on = [
   #   data.nomad_plugin.ebs,
   #   nomad_csi_volume_registration.caddycerts,

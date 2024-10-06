@@ -275,7 +275,7 @@ job "fastcgi" {
             proxy {
 
               dynamic "upstreams" {
-                for_each = test_include_mysql ? [{}] : []
+                for_each = var.test_include_mysql ? [{}] : []
                 content {
                   destination_name = "mysql"
                   local_bind_port  = 3306
