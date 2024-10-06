@@ -4,6 +4,11 @@ variable "test" {
   default     = false
 }
 
+variable "test_nomad_addr" {
+  type    = string
+  default = ""
+}
+
 locals {
   main = !var.test
 }
@@ -99,10 +104,23 @@ job "http" {
         memory_max = 400
       }
 
-      env {
-        CADDYPATH    = "/etc/caddycerts"
-        FASTCGI_ADDR = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
+      dynamic "env" {
+        for_each = local.main ? [{}] : []
+        content {
+          CADDYPATH    = "/etc/caddycerts"
+          FASTCGI_ADDR = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
+        }
       }
+
+      dynamic "env" {
+        for_each = var.test ? [{}] : []
+        content {
+          CADDYPATH       = "/etc/caddycerts"
+          FASTCGI_ADDR    = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
+          TEST_NOMAD_ADDR = var.test_nomad_addr
+        }
+      }
+
     }
 
     dynamic "network" {
@@ -175,9 +193,9 @@ variable "caddyfile_for_test" {
   auto_https off
   order mwcache before rewrite
 }
-http://127.0.0.1:80 http://localhost:80
+http://127.0.0.1:80 http://localhost:80 http://{$TEST_NOMAD_ADDR}:80
 root * /srv/femiwiki.com
-php_fastcgi {$NOMAD_UPSTREAM_ADDR_fastcgi}
+php_fastcgi {$FASTCGI_ADDR}
 file_server
 encode gzip
 mwcache {
