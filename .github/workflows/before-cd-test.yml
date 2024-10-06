@@ -1,8 +1,7 @@
 on:
   push:
-    paths-ignore:
-      - jobs/vector.nomad
-      - terraform/vector.tf
+    branches:
+      - main
   pull_request:
 
 jobs:
