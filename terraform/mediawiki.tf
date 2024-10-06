@@ -65,6 +65,7 @@ resource "nomad_job" "test_fastcgi" {
       test                     = true
       main_nomad_addr          = data.terraform_remote_state.aws.outputs.nomad_addr
       mysql_password_mediawiki = var.mysql_password_mediawiki
+      test_nomad_addr          = data.terraform_remote_state.aws.outputs.test_nomad_addr
     }
   }
 }

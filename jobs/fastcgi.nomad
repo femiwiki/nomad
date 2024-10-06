@@ -20,6 +20,11 @@ variable "test_include_mysql" {
   default     = false
 }
 
+variable "test_nomad_addr" {
+  type    = string
+  default = ""
+}
+
 locals {
   main = !var.test
 }
@@ -248,6 +253,12 @@ job "fastcgi" {
           MEDIAWIKI_SKIP_INSTALL      = "0"
           MEDIAWIKI_SKIP_IMPORT_SITES = "1"
           MEDIAWIKI_SKIP_UPDATE       = "0"
+
+          MEDIAWIKI_SERVER = "http://${var.test_nomad_addr}"
+
+          WG_DB_SERVER   = var.test_include_mysql ? NOMAD_UPSTREAM_ADDR_mysql : var.main_nomad_addr
+          WG_DB_USER     = "mediawiki"
+          WG_DB_PASSWORD = var.mysql_password_mediawiki
         }
       }
     }
@@ -372,9 +383,6 @@ variable "hotfix_test" {
   type    = string
   default = <<EOF
 <?php
-$wgDBserver = '$${var.main_nomad_addr}';
-$wgDBuser = 'mediawiki';
-$wgDBpassword = '$${var.mysql_password_mediawiki}';
 EOF
 }
 
