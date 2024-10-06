@@ -61,9 +61,9 @@ resource "nomad_job" "test_fastcgi" {
     allow_fs = true
     vars = {
       test                     = true
-      main_nomad_addr          = data.terraform_remote_state.aws.outputs.nomad_addr
+      main_nomad_private_ip    = data.terraform_remote_state.aws.outputs.nomad_private_ip
       mysql_password_mediawiki = var.mysql_password_mediawiki
-      test_nomad_addr          = data.terraform_remote_state.aws.outputs.test_nomad_addr
+      test_nomad_public_ip     = data.terraform_remote_state.aws.outputs.test_nomad_public_ip
       test_include_mysql       = false
     }
   }
@@ -97,8 +97,8 @@ resource "nomad_job" "test_http" {
   hcl2 {
     allow_fs = true
     vars = {
-      test            = true
-      test_nomad_addr = data.terraform_remote_state.aws.outputs.test_nomad_addr
+      test                 = true
+      test_nomad_public_ip = data.terraform_remote_state.aws.outputs.test_nomad_public_ip
     }
   }
 }

@@ -51,7 +51,7 @@ provider "nomad" {
 
 provider "nomad" {
   alias        = "test"
-  address      = data.terraform_remote_state.aws.outputs.test_nomad_addr
+  address      = "http://${data.terraform_remote_state.aws.outputs.test_nomad_public_ip}:4646"
   secret_id    = var.test_nomad_token
   consul_token = var.test_consul_token
   region       = "global"
