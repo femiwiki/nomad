@@ -13,6 +13,7 @@ resource "nomad_job" "mysql" {
 }
 
 resource "nomad_job" "mysql_green" {
+  provider = nomad.green
   depends_on = [
     nomad_csi_volume_registration.mysql_green,
   ]
