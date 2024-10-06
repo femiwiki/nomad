@@ -1,5 +1,4 @@
 resource "nomad_job" "backupbot" {
-  provider   = nomad.green
   count      = 0
   depends_on = [nomad_job.mysql_green]
 

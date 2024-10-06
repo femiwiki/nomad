@@ -15,15 +15,6 @@ resource "nomad_job" "mysql_green" {
   }
 }
 
-resource "nomad_job" "memcached" {
-  jobspec = file("../jobs/memcached.nomad")
-  detach  = false
-
-  hcl2 {
-    allow_fs = true
-  }
-}
-
 resource "nomad_job" "memcached_green" {
   provider = nomad.green
   jobspec  = file("../jobs/memcached.nomad")
@@ -37,23 +28,10 @@ resource "nomad_job" "memcached_green" {
   }
 }
 
-resource "nomad_job" "fastcgi" {
-  depends_on = [
-    nomad_job.memcached,
-  ]
-
-  jobspec = file("../jobs/fastcgi.nomad")
-  detach  = false
-
-  hcl2 {
-    allow_fs = true
-  }
-}
-
 resource "nomad_job" "fastcgi_green" {
   provider = nomad.green
   depends_on = [
-    nomad_job.memcached,
+    nomad_job.memcached_green,
   ]
 
   jobspec = file("../jobs/fastcgi.nomad")
@@ -65,19 +43,6 @@ resource "nomad_job" "fastcgi_green" {
       green                    = true
       mysql_password_mediawiki = var.mysql_password_mediawiki
     }
-  }
-}
-
-resource "nomad_job" "http" {
-  depends_on = [
-    nomad_csi_volume_registration.caddycerts,
-  ]
-
-  jobspec = file("../jobs/http.nomad")
-  detach  = false
-
-  hcl2 {
-    allow_fs = true
   }
 }
 
