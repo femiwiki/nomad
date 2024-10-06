@@ -77,10 +77,6 @@ resource "nomad_csi_volume_registration" "caddycerts" {
   }
 }
 
-import {
-  id = "caddycerts@default"
-  to = nomad_csi_volume_registration.caddycerts_green
-}
 resource "nomad_csi_volume_registration" "caddycerts_green" {
   provider    = nomad.test
   depends_on  = [data.nomad_plugin.ebs_green]
