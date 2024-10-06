@@ -17,7 +17,7 @@ job "http" {
   datacenters = ["dc1"]
 
   group "http" {
-    volume {
+    volume "caddycerts" {
       type            = "csi"
       source          = local.main ? "caddycerts" : "caddycerts_green"
       read_only       = false
