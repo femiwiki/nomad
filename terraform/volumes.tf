@@ -56,10 +56,11 @@ resource "nomad_csi_volume_registration" "mysql" {
 
 resource "nomad_csi_volume_registration" "mysql_green" {
   provider    = nomad.green
+  count       = 0
   plugin_id   = "aws-ebs0"
   volume_id   = "mysql_green"
   name        = "mysql_green"
-  external_id = data.terraform_remote_state.aws.outputs.ebs_mysql_green_id
+  external_id = data.terraform_remote_state.aws.outputs.ebs_mysql_id
 
   capability {
     access_mode     = "single-node-writer"
