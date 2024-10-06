@@ -14,6 +14,7 @@ resource "nomad_job" "mysql" {
 
 resource "nomad_job" "mysql_green" {
   provider = nomad.green
+  count    = 0
   depends_on = [
     nomad_csi_volume_registration.mysql_green,
   ]
