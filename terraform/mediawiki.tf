@@ -63,7 +63,6 @@ resource "nomad_job" "fastcgi_green" {
       test                     = true
       main_nomad_private_ip    = data.terraform_remote_state.aws.outputs.nomad_private_ip
       mysql_password_mediawiki = var.mysql_password_mediawiki
-      test_nomad_public_ip     = data.terraform_remote_state.aws.outputs.nomad_green_public_ip
       test_include_mysql       = false
     }
   }

@@ -9,11 +9,6 @@ variable "main_nomad_private_ip" {
   default = ""
 }
 
-variable "test_nomad_public_ip" {
-  type    = string
-  default = ""
-}
-
 variable "mysql_password_mediawiki" {
   type    = string
   default = ""
@@ -250,11 +245,11 @@ job "fastcgi" {
       dynamic "env" {
         for_each = var.test ? [{}] : []
         content {
-          MEDIAWIKI_SKIP_INSTALL      = "0"
+          MEDIAWIKI_SKIP_INSTALL      = "1"
           MEDIAWIKI_SKIP_IMPORT_SITES = "1"
-          MEDIAWIKI_SKIP_UPDATE       = "0"
+          MEDIAWIKI_SKIP_UPDATE       = "1"
 
-          MEDIAWIKI_SERVER = "http://${var.test_nomad_public_ip}"
+          MEDIAWIKI_SERVER = "https://test.femiwiki.com"
 
           WG_DB_SERVER   = var.test_include_mysql ? NOMAD_UPSTREAM_ADDR_mysql : "${var.main_nomad_private_ip}:3306"
           WG_DB_USER     = "mediawiki"
