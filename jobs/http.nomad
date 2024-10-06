@@ -17,48 +17,29 @@ job "http" {
   datacenters = ["dc1"]
 
   group "http" {
-    dynamic "volume" {
-      for_each = local.main ? [{}] : []
-      labels   = ["caddycerts"]
-      content {
-        type            = "csi"
-        source          = "caddycerts"
-        read_only       = false
-        access_mode     = "single-node-writer"
-        attachment_mode = "file-system"
-      }
+    volume {
+      type            = "csi"
+      source          = local.main ? "caddycerts" : "caddycerts_green"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "http" {
       driver = "docker"
 
-      dynamic "volume_mount" {
-        for_each = local.main ? [{}] : []
-        content {
-          volume      = "caddycerts"
-          destination = "/etc/caddycerts"
-          read_only   = false
-        }
+      volume_mount {
+        volume      = "caddycerts"
+        destination = "/etc/caddycerts"
+        read_only   = false
       }
 
-      dynamic "artifact" {
-        for_each = local.main ? [{}] : []
+      artifact {
+        source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
+        destination = "local/Caddyfile"
+        mode        = "file"
 
-        content {
-          source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
-          destination = "local/Caddyfile"
-          mode        = "file"
-
-          options { checksum = "md5:ee0300e384afa6aca74f09a44323ee6e" }
-        }
-      }
-      dynamic "template" {
-        for_each = var.test ? [{}] : []
-
-        content {
-          data        = var.caddyfile_for_test
-          destination = "local/Caddyfile"
-        }
+        options { checksum = "md5:ee0300e384afa6aca74f09a44323ee6e" }
       }
 
       artifact {
@@ -183,42 +164,4 @@ job "http" {
   update {
     auto_revert = true
   }
-}
-
-variable "caddyfile_for_test" {
-  type    = string
-  default = <<EOF
-{
-  # Global options
-  auto_https off
-  order mwcache before rewrite
-}
-http://127.0.0.1:80 http://localhost:80 http://{$TEST_NOMAD_PUBLIC_IP}:80
-root * /srv/femiwiki.com
-php_fastcgi {$FASTCGI_ADDR}
-file_server
-encode gzip
-mwcache {
-	ristretto {
-		num_counters 100000
-		max_cost 10000
-		buffer_items 64
-	}
-  purge_acl {
-    10.0.0.0/8
-    127.0.0.1
-  }
-}
-header {
-  # Enable XSS filtering for legacy browsers
-  X-XSS-Protection "1; mode=block"
-  # Block content sniffing, and enable Cross-Origin Read Blocking
-  X-Content-Type-Options "nosniff"
-  # Avoid clickjacking
-  X-Frame-Options "DENY"
-}
-rewrite /w/api.php /api.php
-rewrite /w/* /index.php
-
-EOF
 }
