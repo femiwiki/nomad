@@ -78,10 +78,10 @@ resource "nomad_job" "fastcgi_green" {
   hcl2 {
     allow_fs = true
     vars = {
-      test                     = true
-      main_nomad_private_ip    = data.terraform_remote_state.aws.outputs.nomad_private_ip
+      green                    = true
+      blue_nomad_private_ip    = data.terraform_remote_state.aws.outputs.nomad_private_ip
       mysql_password_mediawiki = var.mysql_password_mediawiki
-      test_include_mysql       = false
+      green_include_mysql      = false
     }
   }
 }

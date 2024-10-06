@@ -1,10 +1,9 @@
-variable "test" {
-  type        = bool
-  description = "Uses jobs for the test server. Without CSI"
-  default     = false
+variable "green" {
+  type    = bool
+  default = false
 }
 
-variable "main_nomad_private_ip" {
+variable "blue_nomad_private_ip" {
   type    = string
   default = ""
 }
@@ -14,14 +13,14 @@ variable "mysql_password_mediawiki" {
   default = ""
 }
 
-variable "test_include_mysql" {
+variable "green_include_mysql" {
   type        = bool
-  description = "Whether connect to the MySQL in the same Nomad cluster. Only effective when `test` is true"
-  default     = false
+  description = "Whether connect to the MySQL in the same Nomad cluster. Only effective when `green` is true"
+  default     = true
 }
 
 locals {
-  main = !var.test
+  blue = !var.green
 }
 
 job "fastcgi" {
@@ -32,7 +31,7 @@ job "fastcgi" {
     # Init Task Lifecycle
     # Reference: https://www.nomadproject.io/docs/job-specification/lifecycle#init-task-pattern
     dynamic "task" {
-      for_each = local.main ? [{}] : []
+      for_each = local.blue ? [{}] : []
       labels   = ["wait-for-mysql"]
       content {
         lifecycle {
@@ -53,7 +52,7 @@ job "fastcgi" {
     # Inter-job dependencies with init tasks
     # https://developer.hashicorp.com/nomad/tutorials/task-deps/task-dependencies-interjob
     dynamic "task" {
-      for_each = var.test ? [{}] : []
+      for_each = var.green ? [{}] : []
       labels   = ["await-mysql"]
       content {
         lifecycle {
@@ -68,8 +67,8 @@ job "fastcgi" {
           network_mode = "host"
           args = [
             "-c",
-            var.test_include_mysql ? "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
-            : "echo -n 'Waiting for service'; until nc -z ${var.main_nomad_private_ip} 3306 < /dev/null; do echo '.'; sleep 2; done",
+            var.green_include_mysql ? "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
+            : "echo -n 'Waiting for service'; until nc -z ${var.blue_nomad_private_ip} 3306 < /dev/null; do echo '.'; sleep 2; done",
           ]
         }
 
@@ -81,7 +80,7 @@ job "fastcgi" {
     }
 
     dynamic "task" {
-      for_each = local.main ? [{}] : []
+      for_each = local.blue ? [{}] : []
       labels   = ["wait-for-memcached"]
       content {
         lifecycle {
@@ -100,7 +99,7 @@ job "fastcgi" {
       }
     }
     dynamic "task" {
-      for_each = var.test ? [{}] : []
+      for_each = var.green ? [{}] : []
       labels   = ["await-memcached"]
       content {
         lifecycle {
@@ -172,7 +171,7 @@ job "fastcgi" {
       }
 
       template {
-        data        = local.main ? var.hotfix : var.hotfix_test
+        data        = var.hotfix
         destination = "local/Hotfix.php"
         change_mode = "noop"
       }
@@ -221,7 +220,7 @@ job "fastcgi" {
         ]
 
         cpu_hard_limit = true
-        network_mode   = local.main ? "host" : ""
+        network_mode   = local.blue ? "host" : ""
       }
 
       resources {
@@ -231,7 +230,7 @@ job "fastcgi" {
       }
 
       dynamic "env" {
-        for_each = local.main ? [{}] : []
+        for_each = local.blue ? [{}] : []
         content {
           NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:80"
           NOMAD_UPSTREAM_ADDR_mysql     = "127.0.0.1:3306"
@@ -243,15 +242,13 @@ job "fastcgi" {
       }
 
       dynamic "env" {
-        for_each = var.test ? [{}] : []
+        for_each = var.green ? [{}] : []
         content {
           MEDIAWIKI_SKIP_INSTALL      = "1"
           MEDIAWIKI_SKIP_IMPORT_SITES = "1"
           MEDIAWIKI_SKIP_UPDATE       = "1"
 
-          MEDIAWIKI_SERVER = "https://test.femiwiki.com"
-
-          WG_DB_SERVER   = var.test_include_mysql ? NOMAD_UPSTREAM_ADDR_mysql : "${var.main_nomad_private_ip}:3306"
+          WG_DB_SERVER   = var.green_include_mysql ? NOMAD_UPSTREAM_ADDR_mysql : "${var.blue_nomad_private_ip}:3306"
           WG_DB_USER     = "mediawiki"
           WG_DB_PASSWORD = var.mysql_password_mediawiki
         }
@@ -259,7 +256,7 @@ job "fastcgi" {
     }
 
     dynamic "service" {
-      for_each = var.test ? [{}] : []
+      for_each = var.green ? [{}] : []
 
       content {
         name = "fastcgi"
@@ -270,7 +267,7 @@ job "fastcgi" {
             proxy {
 
               dynamic "upstreams" {
-                for_each = var.test_include_mysql ? [{}] : []
+                for_each = var.green_include_mysql ? [{}] : []
                 content {
                   destination_name = "mysql"
                   local_bind_port  = 3306
@@ -297,7 +294,7 @@ job "fastcgi" {
     }
 
     dynamic "network" {
-      for_each = var.test ? [{}] : []
+      for_each = var.green ? [{}] : []
       content {
         mode = "bridge"
       }
@@ -313,9 +310,9 @@ job "fastcgi" {
 
   update {
     auto_revert  = true
-    auto_promote = var.test ? true : false
+    auto_promote = var.green ? true : false
     # canary count equal to the desired count allows a Nomad job to model blue/green deployments
-    canary = var.test ? 1 : 0
+    canary = var.green ? 1 : 0
   }
 }
 
@@ -371,13 +368,6 @@ $wgBlacklistSettings = [
 
 // 업로드를 막고싶을때엔 아래 라인 주석 해제하면 됨
 // $wgEnableUploads = false;
-EOF
-}
-
-variable "hotfix_test" {
-  type    = string
-  default = <<EOF
-<?php
 EOF
 }
 
