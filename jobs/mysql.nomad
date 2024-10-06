@@ -11,30 +11,21 @@ job "mysql" {
   datacenters = ["dc1"]
 
   group "mysql" {
-    dynamic "volume" {
-      for_each = local.blue ? [{}] : []
-      labels   = ["mysql"]
-
-      content {
-        type            = "csi"
-        source          = "mysql"
-        read_only       = false
-        access_mode     = "single-node-writer"
-        attachment_mode = "file-system"
-      }
+    volume "mysql" {
+      type            = "csi"
+      source          = local.blue ? "mysql" : "mysql_green"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "mysql" {
       driver = "docker"
 
-      dynamic "volume_mount" {
-        for_each = local.blue ? [{}] : []
-
-        content {
-          volume      = "mysql"
-          destination = "/srv/mysql"
-          read_only   = false
-        }
+      volume_mount {
+        volume      = "mysql"
+        destination = "/srv/mysql"
+        read_only   = false
       }
 
       artifact {
