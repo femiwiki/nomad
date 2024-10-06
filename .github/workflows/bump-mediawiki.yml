@@ -55,4 +55,4 @@ jobs:
             - [ ] The `MEDIAWIKI_SKIP_UPDATE` environment variable is set correctly.
 
             Automated changes by [create-pull-request](https://github.com/peter-evans/create-pull-request) GitHub action
-          branch: deploy-bump-mw-${{fromJSON(steps.vars.outputs.result).tag}}
+          branch: deploy-bump-mediawiki
