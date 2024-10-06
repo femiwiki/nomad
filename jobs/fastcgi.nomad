@@ -4,7 +4,12 @@ variable "test" {
   default     = false
 }
 
-variable "main_nomad_addr" {
+variable "main_nomad_private_ip" {
+  type    = string
+  default = ""
+}
+
+variable "test_nomad_public_ip" {
   type    = string
   default = ""
 }
@@ -18,11 +23,6 @@ variable "test_include_mysql" {
   type        = bool
   description = "Whether connect to the MySQL in the same Nomad cluster. Only effective when `test` is true"
   default     = false
-}
-
-variable "test_nomad_addr" {
-  type    = string
-  default = ""
 }
 
 locals {
@@ -74,7 +74,7 @@ job "fastcgi" {
           args = [
             "-c",
             var.test_include_mysql ? "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
-            : "echo -n 'Waiting for service'; until nc -z ${var.main_nomad_addr} 3306 < /dev/null; do echo '.'; sleep 2; done",
+            : "echo -n 'Waiting for service'; until nc -z ${var.main_nomad_private_ip} 3306 < /dev/null; do echo '.'; sleep 2; done",
           ]
         }
 
@@ -254,9 +254,9 @@ job "fastcgi" {
           MEDIAWIKI_SKIP_IMPORT_SITES = "1"
           MEDIAWIKI_SKIP_UPDATE       = "0"
 
-          MEDIAWIKI_SERVER = "http://${var.test_nomad_addr}"
+          MEDIAWIKI_SERVER = "http://${var.test_nomad_public_ip}"
 
-          WG_DB_SERVER   = var.test_include_mysql ? NOMAD_UPSTREAM_ADDR_mysql : var.main_nomad_addr
+          WG_DB_SERVER   = var.test_include_mysql ? NOMAD_UPSTREAM_ADDR_mysql : "${var.main_nomad_private_ip}:3306"
           WG_DB_USER     = "mediawiki"
           WG_DB_PASSWORD = var.mysql_password_mediawiki
         }
