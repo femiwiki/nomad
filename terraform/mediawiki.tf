@@ -21,8 +21,8 @@ resource "nomad_job" "memcached" {
   }
 }
 
-resource "nomad_job" "test_memcached" {
-  provider = nomad.test
+resource "nomad_job" "memcached_green" {
+  provider = nomad.green
   jobspec  = file("../jobs/memcached.nomad")
   detach   = false
 
@@ -48,8 +48,8 @@ resource "nomad_job" "fastcgi" {
   }
 }
 
-resource "nomad_job" "test_fastcgi" {
-  provider = nomad.test
+resource "nomad_job" "fastcgi_green" {
+  provider = nomad.green
   depends_on = [
     nomad_job.memcached,
   ]
@@ -63,7 +63,7 @@ resource "nomad_job" "test_fastcgi" {
       test                     = true
       main_nomad_private_ip    = data.terraform_remote_state.aws.outputs.nomad_private_ip
       mysql_password_mediawiki = var.mysql_password_mediawiki
-      test_nomad_public_ip     = data.terraform_remote_state.aws.outputs.test_nomad_public_ip
+      test_nomad_public_ip     = data.terraform_remote_state.aws.outputs.nomad_green_public_ip
       test_include_mysql       = false
     }
   }
@@ -83,11 +83,10 @@ resource "nomad_job" "http" {
   }
 }
 
-resource "nomad_job" "test_http" {
-  provider = nomad.test
+resource "nomad_job" "http_green" {
+  provider = nomad.green
   # TODO Replace EBS CSI with S3 CSI or something
   depends_on = [
-    data.nomad_plugin.ebs_green,
     nomad_csi_volume_registration.caddycerts_green,
   ]
 
@@ -97,8 +96,7 @@ resource "nomad_job" "test_http" {
   hcl2 {
     allow_fs = true
     vars = {
-      test                 = true
-      test_nomad_public_ip = data.terraform_remote_state.aws.outputs.test_nomad_public_ip
+      test = true
     }
   }
 }

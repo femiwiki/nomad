@@ -4,11 +4,6 @@ variable "test" {
   default     = false
 }
 
-variable "test_nomad_public_ip" {
-  type    = string
-  default = ""
-}
-
 locals {
   main = !var.test
 }
@@ -96,9 +91,8 @@ job "http" {
       dynamic "env" {
         for_each = var.test ? [{}] : []
         content {
-          CADDYPATH            = "/etc/caddycerts"
-          FASTCGI_ADDR         = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
-          TEST_NOMAD_PUBLIC_IP = var.test_nomad_public_ip
+          CADDYPATH    = "/etc/caddycerts"
+          FASTCGI_ADDR = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
         }
       }
 
