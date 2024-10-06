@@ -14,6 +14,12 @@ variable "mysql_password_mediawiki" {
   default = ""
 }
 
+variable "test_include_mysql" {
+  type        = bool
+  description = "Whether connect to the MySQL in the same Nomad cluster. Only effective when `test` is true"
+  default     = false
+}
+
 locals {
   main = !var.test
 }
@@ -62,8 +68,8 @@ job "fastcgi" {
           network_mode = "host"
           args = [
             "-c",
-            true ? "echo -n 'Waiting for service'; until nc -z ${var.main_nomad_addr} 3306 < /dev/null; do echo '.'; sleep 2; done"
-            : "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done",
+            var.test_include_mysql ? "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
+            : "echo -n 'Waiting for service'; until nc -z ${var.main_nomad_addr} 3306 < /dev/null; do echo '.'; sleep 2; done",
           ]
         }
 
@@ -256,9 +262,13 @@ job "fastcgi" {
         connect {
           sidecar_service {
             proxy {
-              upstreams {
-                destination_name = "mysql"
-                local_bind_port  = 3306
+
+              dynamic "upstreams" {
+                for_each = test_include_mysql ? [{}] : []
+                content {
+                  destination_name = "mysql"
+                  local_bind_port  = 3306
+                }
               }
 
               upstreams {
