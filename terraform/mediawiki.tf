@@ -12,6 +12,22 @@ resource "nomad_job" "mysql" {
   }
 }
 
+resource "nomad_job" "mysql_green" {
+  depends_on = [
+    nomad_csi_volume_registration.mysql_green,
+  ]
+
+  jobspec = file("../jobs/mysql.nomad")
+  detach  = false
+
+  hcl2 {
+    allow_fs = true
+    vars = {
+      green = true
+    }
+  }
+}
+
 resource "nomad_job" "memcached" {
   jobspec = file("../jobs/memcached.nomad")
   detach  = false

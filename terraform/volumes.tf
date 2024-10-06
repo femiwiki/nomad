@@ -54,6 +54,18 @@ resource "nomad_csi_volume_registration" "mysql" {
   }
 }
 
+resource "nomad_csi_volume_registration" "mysql_green" {
+  plugin_id   = "aws-ebs0"
+  volume_id   = "mysql_green"
+  name        = "mysql_green"
+  external_id = data.terraform_remote_state.aws.outputs.ebs_mysql_green_id
+
+  capability {
+    access_mode     = "single-node-writer"
+    attachment_mode = "file-system"
+  }
+}
+
 import {
   id = "caddycerts@default"
   to = nomad_csi_volume_registration.caddycerts
