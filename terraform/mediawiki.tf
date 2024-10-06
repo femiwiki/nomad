@@ -99,7 +99,8 @@ resource "nomad_job" "test_http" {
   hcl2 {
     allow_fs = true
     vars = {
-      test = true
+      test            = true
+      test_nomad_addr = data.terraform_remote_state.aws.outputs.test_nomad_addr
     }
   }
 }
