@@ -14,7 +14,7 @@ resource "nomad_job" "plugin-ebs-nodes" {
   }
 }
 
-resource "nomad_job" "plugin-ebs-controller_green" {
+resource "nomad_job" "plugin_ebs_controller_green" {
   provider = nomad.test
   jobspec  = file("../jobs/plugin-ebs-controller.nomad")
 
@@ -23,7 +23,7 @@ resource "nomad_job" "plugin-ebs-controller_green" {
   }
 }
 
-resource "nomad_job" "plugin-ebs-nodes_green" {
+resource "nomad_job" "plugin_ebs_nodes_green" {
   provider = nomad.test
   jobspec  = file("../jobs/plugin-ebs-nodes.nomad")
 
