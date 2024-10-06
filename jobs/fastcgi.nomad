@@ -16,7 +16,7 @@ variable "mysql_password_mediawiki" {
 variable "green_include_mysql" {
   type        = bool
   description = "Whether connect to the MySQL in the same Nomad cluster. Only effective when `green` is true"
-  default     = true
+  default     = false
 }
 
 locals {
