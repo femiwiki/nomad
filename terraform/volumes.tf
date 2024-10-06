@@ -82,6 +82,7 @@ import {
   to = nomad_csi_volume_registration.caddycerts_green
 }
 resource "nomad_csi_volume_registration" "caddycerts_green" {
+  provider    = nomad.test
   depends_on  = [data.nomad_plugin.ebs_green]
   plugin_id   = "aws-ebs0"
   volume_id   = "caddycerts_green"
