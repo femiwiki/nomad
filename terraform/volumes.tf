@@ -15,7 +15,7 @@ resource "nomad_job" "plugin-ebs-nodes" {
 }
 
 resource "nomad_job" "plugin_ebs_controller_green" {
-  provider = nomad.test
+  provider = nomad.green
   jobspec  = file("../jobs/plugin-ebs-controller.nomad")
 
   hcl2 {
@@ -24,7 +24,7 @@ resource "nomad_job" "plugin_ebs_controller_green" {
 }
 
 resource "nomad_job" "plugin_ebs_nodes_green" {
-  provider = nomad.test
+  provider = nomad.green
   jobspec  = file("../jobs/plugin-ebs-nodes.nomad")
 
   hcl2 {
@@ -38,7 +38,7 @@ data "nomad_plugin" "ebs" {
 }
 
 data "nomad_plugin" "ebs_green" {
-  provider         = nomad.test
+  provider         = nomad.green
   plugin_id        = "aws-ebs0"
   wait_for_healthy = true
 }
@@ -78,7 +78,7 @@ resource "nomad_csi_volume_registration" "caddycerts" {
 }
 
 resource "nomad_csi_volume_registration" "caddycerts_green" {
-  provider    = nomad.test
+  provider    = nomad.green
   depends_on  = [data.nomad_plugin.ebs_green]
   plugin_id   = "aws-ebs0"
   volume_id   = "caddycerts_green"

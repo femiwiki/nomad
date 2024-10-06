@@ -3,12 +3,12 @@ variable "nomad_token" {
   sensitive = true
 }
 
-variable "test_nomad_token" {
+variable "nomad_green_token" {
   type      = string
   sensitive = true
 }
 
-variable "test_consul_token" {
+variable "consul_green_token" {
   type      = string
   sensitive = true
 }
@@ -50,9 +50,8 @@ provider "nomad" {
 }
 
 provider "nomad" {
-  alias        = "test"
-  address      = "http://${data.terraform_remote_state.aws.outputs.test_nomad_public_ip}:4646"
-  secret_id    = var.test_nomad_token
-  consul_token = var.test_consul_token
-  region       = "global"
+  alias     = "green"
+  address   = "http://${data.terraform_remote_state.aws.outputs.nomad_green_public_ip}:4646"
+  secret_id = var.nomad_green_token
+  region    = "global"
 }
