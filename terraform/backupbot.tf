@@ -1,5 +1,7 @@
 resource "nomad_job" "backupbot" {
-  depends_on = [nomad_job.mysql]
+  provider   = nomad.green
+  count      = 0
+  depends_on = [nomad_job.mysql_green]
 
   detach  = false
   jobspec = file("../jobs/backupbot.nomad")

@@ -1,20 +1,5 @@
-resource "nomad_job" "mysql" {
-  depends_on = [
-    data.nomad_plugin.ebs,
-    nomad_csi_volume_registration.mysql,
-  ]
-
-  jobspec = file("../jobs/mysql.nomad")
-  detach  = false
-
-  hcl2 {
-    allow_fs = true
-  }
-}
-
 resource "nomad_job" "mysql_green" {
   provider = nomad.green
-  count    = 0
   depends_on = [
     nomad_csi_volume_registration.mysql_green,
   ]
@@ -54,7 +39,6 @@ resource "nomad_job" "memcached_green" {
 
 resource "nomad_job" "fastcgi" {
   depends_on = [
-    nomad_job.mysql,
     nomad_job.memcached,
   ]
 
@@ -79,16 +63,13 @@ resource "nomad_job" "fastcgi_green" {
     allow_fs = true
     vars = {
       green                    = true
-      blue_nomad_private_ip    = data.terraform_remote_state.aws.outputs.nomad_private_ip
       mysql_password_mediawiki = var.mysql_password_mediawiki
-      green_include_mysql      = false
     }
   }
 }
 
 resource "nomad_job" "http" {
   depends_on = [
-    data.nomad_plugin.ebs,
     nomad_csi_volume_registration.caddycerts,
   ]
 

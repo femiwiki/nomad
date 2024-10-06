@@ -3,20 +3,9 @@ variable "green" {
   default = false
 }
 
-variable "blue_nomad_private_ip" {
-  type    = string
-  default = ""
-}
-
 variable "mysql_password_mediawiki" {
   type    = string
   default = ""
-}
-
-variable "green_include_mysql" {
-  type        = bool
-  description = "Whether connect to the MySQL in the same Nomad cluster. Only effective when `green` is true"
-  default     = false
 }
 
 locals {
@@ -67,8 +56,7 @@ job "fastcgi" {
           network_mode = "host"
           args = [
             "-c",
-            var.green_include_mysql ? "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
-            : "echo -n 'Waiting for service'; until nc -z ${var.blue_nomad_private_ip} 3306 < /dev/null; do echo '.'; sleep 2; done",
+            "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
           ]
         }
 
@@ -248,7 +236,7 @@ job "fastcgi" {
           MEDIAWIKI_SKIP_IMPORT_SITES = "1"
           MEDIAWIKI_SKIP_UPDATE       = "1"
 
-          WG_DB_SERVER   = var.green_include_mysql ? NOMAD_UPSTREAM_ADDR_mysql : "${var.blue_nomad_private_ip}:3306"
+          WG_DB_SERVER   = NOMAD_UPSTREAM_ADDR_mysql
           WG_DB_USER     = "mediawiki"
           WG_DB_PASSWORD = var.mysql_password_mediawiki
         }
@@ -266,12 +254,9 @@ job "fastcgi" {
           sidecar_service {
             proxy {
 
-              dynamic "upstreams" {
-                for_each = var.green_include_mysql ? [{}] : []
-                content {
-                  destination_name = "mysql"
-                  local_bind_port  = 3306
-                }
+              upstreams {
+                destination_name = "mysql"
+                local_bind_port  = 3306
               }
 
               upstreams {
