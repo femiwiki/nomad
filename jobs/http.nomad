@@ -11,6 +11,11 @@ locals {
 job "http" {
   datacenters = ["dc1"]
 
+  constraint {
+    attribute = meta.main_elastic_ip
+    value     = "true"
+  }
+
   group "http" {
     volume "caddycerts" {
       type            = "csi"
