@@ -1,11 +1,10 @@
-variable "test" {
-  type        = bool
-  description = "Uses jobs for the test server. Without CSI"
-  default     = false
+variable "green" {
+  type    = bool
+  default = false
 }
 
 locals {
-  main = !var.test
+  blue = !var.green
 }
 
 job "mysql" {
@@ -13,7 +12,7 @@ job "mysql" {
 
   group "mysql" {
     dynamic "volume" {
-      for_each = local.main ? [{}] : []
+      for_each = local.blue ? [{}] : []
       labels   = ["mysql"]
 
       content {
@@ -29,7 +28,7 @@ job "mysql" {
       driver = "docker"
 
       dynamic "volume_mount" {
-        for_each = local.main ? [{}] : []
+        for_each = local.blue ? [{}] : []
 
         content {
           volume      = "mysql"
@@ -64,7 +63,7 @@ job "mysql" {
     network {
       mode = "bridge"
       dynamic "port" {
-        for_each = local.main ? [{}] : []
+        for_each = local.blue ? [{}] : []
         labels   = ["network"]
 
         content {
@@ -75,7 +74,7 @@ job "mysql" {
     }
 
     dynamic "service" {
-      for_each = var.test ? [{}] : []
+      for_each = var.green ? [{}] : []
       content {
         name = "mysql"
         port = "3306"
