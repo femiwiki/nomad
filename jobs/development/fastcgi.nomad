@@ -59,7 +59,7 @@ job "fastcgi" {
         image = "ghcr.io/femiwiki/femiwiki:latest"
 
         volumes = [
-          "secrets/secrets.php:/a/secret.php",
+          "secrets/secrets.php:/a/secrets.php",
           "local/Hotfix.php:/a/Hotfix.php",
           "local/site-list.xml:/a/site-list.xml",
         ]
