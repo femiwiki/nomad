@@ -87,7 +87,6 @@ resource "nomad_job" "http_green" {
   provider = nomad.green
   # TODO Replace EBS CSI with S3 CSI or something
   depends_on = [
-    data.nomad_plugin.ebs_green,
     nomad_csi_volume_registration.caddycerts_green,
   ]
 

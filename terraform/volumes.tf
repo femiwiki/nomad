@@ -37,12 +37,6 @@ data "nomad_plugin" "ebs" {
   wait_for_healthy = true
 }
 
-data "nomad_plugin" "ebs_green" {
-  provider         = nomad.green
-  plugin_id        = "aws-ebs0"
-  wait_for_healthy = true
-}
-
 import {
   id = "mysql@default"
   to = nomad_csi_volume_registration.mysql
@@ -79,7 +73,6 @@ resource "nomad_csi_volume_registration" "caddycerts" {
 
 resource "nomad_csi_volume_registration" "caddycerts_green" {
   provider    = nomad.green
-  depends_on  = [data.nomad_plugin.ebs_green]
   plugin_id   = "aws-ebs0"
   volume_id   = "caddycerts_green"
   name        = "caddycerts_green"
