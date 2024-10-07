@@ -5,8 +5,19 @@ on:
   pull_request:
 
 jobs:
+  changes:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backupbot:
+              - '!**/backupbot.*'
+
   # This name is used by status check requirement
   before-cd-test:
+    if: steps.changes.outputs.src == 'true'
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
