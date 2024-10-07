@@ -219,7 +219,7 @@ job "fastcgi" {
     }
 
     restart {
-      mode = "delay"
+      attempts = 0
     }
   }
 
@@ -227,7 +227,8 @@ job "fastcgi" {
     auto_revert  = true
     auto_promote = var.green ? true : false
     # canary count equal to the desired count allows a Nomad job to model blue/green deployments
-    canary = var.green ? 1 : 0
+    canary            = var.green ? 1 : 0
+    progress_deadline = "1h"
   }
 }
 
