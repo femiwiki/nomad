@@ -3,12 +3,20 @@ on:
     branches:
       - main
   pull_request:
-    paths-ignore:
-      - '**/backupbot.*'
 
 jobs:
+  no-changes:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backupbot:
+              - '!**/backupbot.*'
+
   # This name is used by status check requirement
   before-cd-test:
+    if: ${{ needs.no-changes.outputs.backupbot == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
