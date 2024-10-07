@@ -1,7 +1,6 @@
-variable "test" {
-  type        = bool
-  description = "Uses jobs for the test server. Without CSI"
-  default     = false
+variable "mysql_password_mediawiki" {
+  type    = string
+  default = ""
 }
 
 job "backupbot" {
@@ -25,6 +24,9 @@ job "backupbot" {
 
       env {
         LOCAL_SETTINGS = "/a/secrets.php"
+        WG_DB_SERVER   = NOMAD_UPSTREAM_ADDR_mysql
+        WG_DB_USER     = "mediawiki"
+        WG_DB_PASSWORD = var.mysql_password_mediawiki
       }
 
       resources {
@@ -32,11 +34,8 @@ job "backupbot" {
       }
     }
 
-    dynamic "network" {
-      for_each = var.test ? [{}] : []
-      content {
-        mode = "bridge"
-      }
+    network {
+      mode = "bridge"
     }
   }
 
