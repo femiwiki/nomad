@@ -40,7 +40,6 @@ resource "nomad_job" "fastcgi_green" {
   hcl2 {
     allow_fs = true
     vars = {
-      green                    = true
       mysql_password_mediawiki = var.mysql_password_mediawiki
     }
   }
