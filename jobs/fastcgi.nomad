@@ -15,101 +15,57 @@ locals {
 job "fastcgi" {
   datacenters = ["dc1"]
 
+  constraint {
+    operator = "distinct_hosts"
+    value    = true
+  }
+
   group "fastcgi" {
+    count = 3
 
-    # Init Task Lifecycle
-    # Reference: https://www.nomadproject.io/docs/job-specification/lifecycle#init-task-pattern
-    dynamic "task" {
-      for_each = local.blue ? [{}] : []
-      labels   = ["wait-for-mysql"]
-      content {
-        lifecycle {
-          hook    = "prestart"
-          sidecar = false
-        }
-
-        driver = "exec"
-        config {
-          command = "sh"
-          args = [
-            "-c",
-            "while ! ncat --send-only 127.0.0.1 3306 < /dev/null; do sleep 1; done",
-          ]
-        }
+    task "await_mysql" {
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
       }
-    }
-    # Inter-job dependencies with init tasks
-    # https://developer.hashicorp.com/nomad/tutorials/task-deps/task-dependencies-interjob
-    dynamic "task" {
-      for_each = var.green ? [{}] : []
-      labels   = ["await-mysql"]
-      content {
-        lifecycle {
-          hook    = "prestart"
-          sidecar = false
-        }
 
-        driver = "docker"
-        config {
-          image        = "busybox:1.28"
-          command      = "sh"
-          network_mode = "host"
-          args = [
-            "-c",
-            "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
-          ]
-        }
+      driver = "docker"
+      config {
+        image        = "busybox:1.28"
+        command      = "sh"
+        network_mode = "host"
+        args = [
+          "-c",
+          "echo -n 'Waiting for service'; until nslookup mysql.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done"
+        ]
+      }
 
-        resources {
-          cpu    = 100
-          memory = 100
-        }
+      resources {
+        cpu    = 100
+        memory = 100
       }
     }
 
-    dynamic "task" {
-      for_each = local.blue ? [{}] : []
-      labels   = ["wait-for-memcached"]
-      content {
-        lifecycle {
-          hook    = "prestart"
-          sidecar = false
-        }
-
-        driver = "exec"
-        config {
-          command = "sh"
-          args = [
-            "-c",
-            "while ! ncat --send-only 127.0.0.1 11211 < /dev/null; do sleep 1; done",
-          ]
-        }
+    task "await_memcached" {
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
       }
-    }
-    dynamic "task" {
-      for_each = var.green ? [{}] : []
-      labels   = ["await-memcached"]
-      content {
-        lifecycle {
-          hook    = "prestart"
-          sidecar = false
-        }
 
-        driver = "docker"
-        config {
-          image        = "busybox:1.28"
-          command      = "sh"
-          network_mode = "host"
-          args = [
-            "-c",
-            "echo -n 'Waiting for service'; until nslookup memcached.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done",
-          ]
-        }
+      driver = "docker"
+      config {
+        image        = "busybox:1.28"
+        command      = "sh"
+        network_mode = "host"
+        args = [
+          "-c",
+          "echo -n 'Waiting for service'; until nslookup memcached.service.consul 127.0.0.1:8600 2>&1 >/dev/null; do echo '.'; sleep 2; done",
+        ]
+      }
 
-        resources {
-          cpu    = 100
-          memory = 100
-        }
+      resources {
+        cpu    = 100
+        memory = 100
       }
     }
 
@@ -208,7 +164,6 @@ job "fastcgi" {
         ]
 
         cpu_hard_limit = true
-        network_mode   = local.blue ? "host" : ""
       }
 
       resources {
@@ -217,78 +172,55 @@ job "fastcgi" {
         memory_max = 800
       }
 
-      dynamic "env" {
-        for_each = local.blue ? [{}] : []
-        content {
-          NOMAD_UPSTREAM_ADDR_http      = "127.0.0.1:80"
-          NOMAD_UPSTREAM_ADDR_mysql     = "127.0.0.1:3306"
-          NOMAD_UPSTREAM_ADDR_memcached = "127.0.0.1:11211"
-          MEDIAWIKI_SKIP_INSTALL        = "1"
-          MEDIAWIKI_SKIP_IMPORT_SITES   = "1"
-          MEDIAWIKI_SKIP_UPDATE         = "1"
-        }
-      }
+      env {
+        MEDIAWIKI_SKIP_INSTALL      = "1"
+        MEDIAWIKI_SKIP_IMPORT_SITES = "1"
+        MEDIAWIKI_SKIP_UPDATE       = "1"
 
-      dynamic "env" {
-        for_each = var.green ? [{}] : []
-        content {
-          MEDIAWIKI_SKIP_INSTALL      = "1"
-          MEDIAWIKI_SKIP_IMPORT_SITES = "1"
-          MEDIAWIKI_SKIP_UPDATE       = "1"
-
-          WG_DB_SERVER   = NOMAD_UPSTREAM_ADDR_mysql
-          WG_DB_USER     = "mediawiki"
-          WG_DB_PASSWORD = var.mysql_password_mediawiki
-        }
+        WG_DB_SERVER   = NOMAD_UPSTREAM_ADDR_mysql
+        WG_DB_USER     = "mediawiki"
+        WG_DB_PASSWORD = var.mysql_password_mediawiki
       }
     }
 
-    dynamic "service" {
-      for_each = var.green ? [{}] : []
+    service {
+      name = "fastcgi"
+      port = "9000"
 
-      content {
-        name = "fastcgi"
-        port = "9000"
+      connect {
+        sidecar_service {
+          proxy {
 
-        connect {
-          sidecar_service {
-            proxy {
+            upstreams {
+              destination_name = "mysql"
+              local_bind_port  = 3306
+            }
 
-              upstreams {
-                destination_name = "mysql"
-                local_bind_port  = 3306
-              }
-
-              upstreams {
-                destination_name = "memcached"
-                local_bind_port  = 11211
-              }
+            upstreams {
+              destination_name = "memcached"
+              local_bind_port  = 11211
             }
           }
+        }
 
-          sidecar_task {
-            config {
-              memory_hard_limit = 300
-            }
-            resources {
-              memory = 20
-            }
+        sidecar_task {
+          config {
+            memory_hard_limit = 300
+          }
+          resources {
+            memory = 20
           }
         }
       }
     }
 
-    dynamic "network" {
-      for_each = var.green ? [{}] : []
-      content {
-        mode = "bridge"
-      }
+    network {
+      mode = "bridge"
     }
-  }
 
-  reschedule {
-    delay     = "10s"
-    unlimited = true
+    restart {
+      mode = "delay"
+    }
   }
 
   update {
