@@ -21,6 +21,7 @@ job "fastcgi" {
   }
 
   group "fastcgi" {
+    count = 3
 
     task "await_mysql" {
       lifecycle {
