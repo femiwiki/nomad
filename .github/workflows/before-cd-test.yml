@@ -17,7 +17,7 @@ jobs:
 
   # This name is used by status check requirement
   before-cd-test:
-    if: steps.changes.outputs.src == 'true'
+    if: steps.changes.outputs.backupbot == 'true'
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
