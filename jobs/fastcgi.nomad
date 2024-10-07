@@ -220,6 +220,7 @@ job "fastcgi" {
 
     restart {
       attempts = 0
+      mode     = "fail"
     }
   }
 
