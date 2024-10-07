@@ -1,24 +1,10 @@
-variable "green" {
-  type    = bool
-  default = false
-}
-
 variable "mysql_password_mediawiki" {
   type    = string
   default = ""
 }
 
-locals {
-  blue = !var.green
-}
-
 job "fastcgi" {
   datacenters = ["dc1"]
-
-  constraint {
-    operator = "distinct_hosts"
-    value    = true
-  }
 
   group "fastcgi" {
     count = 3
@@ -225,10 +211,9 @@ job "fastcgi" {
   }
 
   update {
-    auto_revert  = true
-    auto_promote = var.green ? true : false
-    # canary count equal to the desired count allows a Nomad job to model blue/green deployments
-    canary            = var.green ? 1 : 0
+    auto_revert       = true
+    auto_promote      = true
+    canary            = 1
     progress_deadline = "1h"
   }
 }
