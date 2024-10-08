@@ -155,7 +155,7 @@ job "fastcgi" {
       resources {
         cpu        = 3000
         memory     = 400
-        memory_max = 800
+        memory_max = 600
       }
 
       env {
