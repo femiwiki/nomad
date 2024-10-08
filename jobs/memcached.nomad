@@ -25,7 +25,7 @@ job "memcached" {
       check {
         type     = "script"
         task     = "memcached"
-        command  = "/usr/bin/bash"
+        command  = "/usr/bin/nc"
         args     = ["-zv", "localhost", "11211"]
         interval = "10s"
         timeout  = "1s"
