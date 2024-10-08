@@ -22,9 +22,6 @@ resource "nomad_job" "memcached_green" {
 
   hcl2 {
     allow_fs = true
-    vars = {
-      test = true
-    }
   }
 }
 

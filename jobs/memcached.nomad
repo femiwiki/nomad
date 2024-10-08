@@ -1,13 +1,3 @@
-variable "test" {
-  type        = bool
-  description = "Uses jobs for the test server.."
-  default     = false
-}
-
-locals {
-  main = !var.test
-}
-
 job "memcached" {
   datacenters = ["dc1"]
 
@@ -24,48 +14,25 @@ job "memcached" {
       }
     }
 
-    network {
-      mode = "bridge"
+    service {
+      name = "memcached"
+      port = "11211"
 
-      dynamic "port" {
-        for_each = var.test ? [] : [{}]
-        labels   = ["memcached"]
-        content {
-          static = 11211
-        }
+      check {
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "1s"
       }
-    }
 
-    dynamic "service" {
-      for_each = local.main ? [{}] : []
-      content {
-        provider = "nomad"
-        name     = "memcached"
-        port     = "memcached"
-        check {
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "1s"
-        }
-      }
-    }
+      connect {
+        sidecar_service {}
 
-    dynamic "service" {
-      for_each = var.test ? [{}] : []
-      content {
-        name = "memcached"
-        port = "11211"
-
-        connect {
-          sidecar_service {}
-
-          sidecar_task {
-            config {
-              memory_hard_limit = 300
-            }
-            resources {
-              memory = 20
-            }
+        sidecar_task {
+          config {
+            memory_hard_limit = 300
+          }
+          resources {
+            memory = 20
           }
         }
       }
@@ -79,8 +46,8 @@ job "memcached" {
 
   update {
     auto_revert  = true
-    auto_promote = var.test ? true : false
+    auto_promote = true
     # canary count equal to the desired count allows a Nomad job to model blue/green deployments
-    canary = var.test ? 1 : 0
+    canary = 1
   }
 }
