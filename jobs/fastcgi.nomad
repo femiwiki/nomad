@@ -203,11 +203,6 @@ job "fastcgi" {
     network {
       mode = "bridge"
     }
-
-    restart {
-      attempts = 0
-      mode     = "fail"
-    }
   }
 
   update {
