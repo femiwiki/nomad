@@ -14,12 +14,19 @@ job "memcached" {
       }
     }
 
+    network {
+      mode = "bridge"
+    }
+
     service {
       name = "memcached"
       port = "11211"
 
       check {
-        type     = "tcp"
+        type     = "script"
+        task     = "memcached"
+        command  = "/usr/bin/bash"
+        args     = ["-zv", "localhost", "11211"]
         interval = "10s"
         timeout  = "1s"
       }
