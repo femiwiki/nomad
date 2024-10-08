@@ -7,7 +7,7 @@ job "fastcgi" {
   datacenters = ["dc1"]
 
   group "fastcgi" {
-    count = 2
+    count = 1
 
     task "await_mysql" {
       lifecycle {
