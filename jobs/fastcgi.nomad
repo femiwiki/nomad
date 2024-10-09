@@ -7,7 +7,7 @@ job "fastcgi" {
   datacenters = ["dc1"]
 
   group "fastcgi" {
-    count = 1
+    count = 2
 
     task "await_mysql" {
       lifecycle {
@@ -97,7 +97,7 @@ job "fastcgi" {
         destination = "local/www.conf"
         mode        = "file"
 
-        options { checksum = "md5:8ce9afeeee1ae1ff893b58be8dc7c3ec" }
+        options { checksum = "md5:fa11e91ebb96995b117b9a7408c3f315" }
       }
 
       template {
@@ -155,7 +155,7 @@ job "fastcgi" {
       resources {
         cpu        = 3000
         memory     = 400
-        memory_max = 600
+        memory_max = 400
       }
 
       env {
