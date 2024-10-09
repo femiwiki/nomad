@@ -1,13 +1,3 @@
-variable "test" {
-  type        = bool
-  description = "Uses jobs for the test server. Without certification."
-  default     = false
-}
-
-locals {
-  main = !var.test
-}
-
 job "http" {
   datacenters = ["dc1"]
 
@@ -19,7 +9,7 @@ job "http" {
   group "http" {
     volume "caddycerts" {
       type            = "csi"
-      source          = local.main ? "caddycerts" : "caddycerts_green"
+      source          = "caddycerts_green"
       read_only       = false
       access_mode     = "single-node-writer"
       attachment_mode = "file-system"
@@ -55,8 +45,6 @@ job "http" {
         command = "caddy"
         args    = ["run"]
 
-        network_mode = local.main ? "host" : ""
-
         volumes = [
           "local/Caddyfile:/srv/femiwiki.com/Caddyfile",
           "local/robots.txt:/srv/femiwiki.com/robots.txt",
@@ -85,62 +73,45 @@ job "http" {
         memory_max = 400
       }
 
-      dynamic "env" {
-        for_each = local.main ? [{}] : []
-        content {
-          CADDYPATH    = "/etc/caddycerts"
-          FASTCGI_ADDR = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
-        }
-      }
-
-      dynamic "env" {
-        for_each = var.test ? [{}] : []
-        content {
-          CADDYPATH    = "/etc/caddycerts"
-          FASTCGI_ADDR = var.test ? NOMAD_UPSTREAM_ADDR_fastcgi : "127.0.0.1:9000"
-        }
+      env {
+        CADDYPATH    = "/etc/caddycerts"
+        FASTCGI_ADDR = NOMAD_UPSTREAM_ADDR_fastcgi
       }
 
     }
 
-    dynamic "network" {
-      for_each = var.test ? [{}] : []
-      content {
-        mode = "bridge"
+    network {
+      mode = "bridge"
 
-        port "http" {
-          static = 80
-        }
+      port "http" {
+        static = 80
+      }
 
-        port "https" {
-          static = 443
-        }
+      port "https" {
+        static = 443
       }
     }
 
-    dynamic "service" {
-      for_each = var.test ? [{}] : []
-      content {
-        name = "http"
-        port = "80"
+    service {
+      name = "http"
+      port = "80"
 
-        connect {
-          sidecar_service {
-            proxy {
-              upstreams {
-                destination_name = "fastcgi"
-                local_bind_port  = 9000
-              }
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "fastcgi"
+              local_bind_port  = 9000
             }
           }
+        }
 
-          sidecar_task {
-            config {
-              memory_hard_limit = 500
-            }
-            resources {
-              memory = 20
-            }
+        sidecar_task {
+          config {
+            memory_hard_limit = 500
+          }
+          resources {
+            memory = 20
           }
         }
       }

@@ -54,8 +54,5 @@ resource "nomad_job" "http_green" {
 
   hcl2 {
     allow_fs = true
-    vars = {
-      test = true
-    }
   }
 }
