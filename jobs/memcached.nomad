@@ -10,7 +10,7 @@ job "memcached" {
       }
 
       resources {
-        memory = 100
+        memory = 80
       }
     }
 
@@ -36,7 +36,7 @@ job "memcached" {
 
         sidecar_task {
           config {
-            memory_hard_limit = 300
+            memory_hard_limit = 40
           }
           resources {
             memory = 20

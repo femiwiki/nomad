@@ -70,7 +70,7 @@ job "http" {
 
       resources {
         memory     = 100
-        memory_max = 400
+        memory_max = 130
       }
 
       env {
@@ -108,10 +108,10 @@ job "http" {
 
         sidecar_task {
           config {
-            memory_hard_limit = 500
+            memory_hard_limit = 60
           }
           resources {
-            memory = 20
+            memory = 40
           }
         }
       }

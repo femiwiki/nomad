@@ -191,10 +191,10 @@ job "fastcgi" {
 
         sidecar_task {
           config {
-            memory_hard_limit = 300
+            memory_hard_limit = 70
           }
           resources {
-            memory = 20
+            memory = 50
           }
         }
       }

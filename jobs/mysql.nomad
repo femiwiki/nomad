@@ -42,7 +42,7 @@ job "mysql" {
       }
 
       resources {
-        memory     = 400
+        memory     = 500
         memory_max = 700
       }
 
@@ -75,7 +75,7 @@ job "mysql" {
 
           sidecar_task {
             config {
-              memory_hard_limit = 300
+              memory_hard_limit = 50
             }
             resources {
               memory = 20
