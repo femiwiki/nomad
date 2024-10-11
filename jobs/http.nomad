@@ -58,8 +58,6 @@ job "http" {
           "local/robots.txt:/srv/femiwiki.com/robots.txt",
         ]
 
-        # Mount volume into the container
-        # Reference: https://www.nomadproject.io/docs/drivers/docker#mounts
         mounts = [
           {
             type     = "volume"

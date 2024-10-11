@@ -54,7 +54,6 @@ job "memcached" {
   update {
     auto_revert  = true
     auto_promote = true
-    # canary count equal to the desired count allows a Nomad job to model blue/green deployments
-    canary = 1
+    canary       = 1
   }
 }
