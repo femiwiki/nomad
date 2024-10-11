@@ -42,8 +42,8 @@ job "mysql" {
       }
 
       resources {
-        memory     = 500
-        memory_max = 700
+        memory     = 700
+        memory_max = 800
       }
 
       env {

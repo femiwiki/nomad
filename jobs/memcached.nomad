@@ -39,7 +39,7 @@ job "memcached" {
             memory_hard_limit = 40
           }
           resources {
-            memory = 20
+            memory = 30
           }
         }
       }
