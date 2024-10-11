@@ -26,10 +26,18 @@ job "http" {
 
       artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
-        destination = "local/Caddyfile"
+        destination = "local/Caddyfile.tpl"
         mode        = "file"
-
         options { checksum = "md5:ee0300e384afa6aca74f09a44323ee6e" }
+      }
+      template {
+        source      = "local/Caddyfile.tpl"
+        destination = "local/Caddyfile"
+        change_mode = "script"
+        change_script {
+          command = "caddy"
+          args    = ["reload"]
+        }
       }
 
       artifact {
