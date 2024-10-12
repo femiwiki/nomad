@@ -31,7 +31,24 @@ resource "nomad_job" "fastcgi_green" {
     nomad_job.memcached_green,
   ]
 
-  jobspec = file("../jobs/fastcgi.nomad")
+  jobspec = file("../jobs/fastcgi-green.nomad")
+  detach  = false
+
+  hcl2 {
+    allow_fs = true
+    vars = {
+      mysql_password_mediawiki = var.mysql_password_mediawiki
+    }
+  }
+}
+
+resource "nomad_job" "fastcgi_blue" {
+  provider = nomad.green
+  depends_on = [
+    nomad_job.memcached_green,
+  ]
+
+  jobspec = file("../jobs/fastcgi-blue.nomad")
   detach  = false
 
   hcl2 {
