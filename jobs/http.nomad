@@ -28,7 +28,7 @@ job "http" {
         source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
         destination = "local/Caddyfile.tpl"
         mode        = "file"
-        options { checksum = "md5:4101989e803c07aaa406259a1439a73c" }
+        options { checksum = "md5:2a1ec2a963336735ef480843e54fb205" }
       }
       template {
         source      = "local/Caddyfile.tpl"
@@ -107,10 +107,6 @@ job "http" {
           proxy {
             upstreams {
               destination_name = "fastcgi"
-              local_bind_port  = 9000
-            }
-            upstreams {
-              destination_name = "fastcgi_blue"
               local_bind_port  = 9000
             }
           }
