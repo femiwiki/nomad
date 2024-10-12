@@ -109,6 +109,10 @@ job "http" {
               destination_name = "fastcgi"
               local_bind_port  = 9000
             }
+            upstreams {
+              destination_name = "fastcgi_blue"
+              local_bind_port  = 9000
+            }
           }
         }
 
