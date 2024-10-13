@@ -140,7 +140,7 @@ job "fastcgi" {
           "local/www.conf:/usr/local/etc/php-fpm.d/www.conf",
           "local/AdoyFastCgiClient.php:/srv/fcgi-check/AdoyFastCgiClient.php",
           "local/fcgi-probe.php:/srv/fcgi-check/fcgi-probe.php",
-          "secrets/secrets.php:/a/secret.php",
+          "secrets/secrets.php:/a/secrets.php",
           "secrets/analytics-credentials-file.json:/a/analytics-credentials-file.json",
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
           "local/Hotfix.php:/a/Hotfix.php",
@@ -271,6 +271,7 @@ variable "pretrun" {
 #!/bin/bash
 set -euo pipefail; IFS=$'\n\t'
 
-test -s /a/secret.php
+test -s /a/secrets.php
+test -s /a/LocalSettings.php
 EOF
 }
