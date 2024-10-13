@@ -244,38 +244,7 @@ variable "hotfix" {
  * @file
  */
 
-$wgBlockTargetMigrationStage = SCHEMA_COMPAT_WRITE_BOTH | SCHEMA_COMPAT_READ_OLD;
-
-$wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 3;
-$wgScribuntoEngineConf['luasandbox']['memoryLimit'] = 52428800; # 50 MiB
-
-$wgAbuseFilterEnableBlockedExternalDomain = true;
-$wgGroupPermissions['abusefilter']['abusefilter-modify-blocked-external-domains'] = true;
-$wgGroupPermissions['abusefilter']['abusefilter-bypass-blocked-external-domains'] = true;
-
 $wgAutoConfirmAge = 3600;
-$wgGroupPermissions['user']['flow-hide'] = false;
-$wgGroupPermissions['user']['flow-lock'] = false;
-$wgGroupPermissions['user']['editcontentmodel'] = false;
-$wgGroupPermissions['user']['move'] = false;
-$wgGroupPermissions['autoconfirmed']['flow-hide'] = true;
-$wgGroupPermissions['autoconfirmed']['flow-lock'] = true;
-$wgGroupPermissions['autoconfirmed']['editcontentmodel'] = true;
-$wgGroupPermissions['autoconfirmed']['move'] = true;
-$wgGroupPermissions['rollbacker']['rollback'] = true;
-
-$wgBlacklistSettings = [
-	'spam' => [
-		'files' => [
-			"https://meta.wikimedia.org/w/index.php?title=Spam_blacklist&action=raw&sb_ver=1",
-		],
-	],
-	'email' => [
-		'files' => [
-			"https://meta.wikimedia.org/w/index.php?title=Email_blacklist&action=raw&sb_ver=1",
-		],
-	],
-];
 
 // Maintenance
 // 점검이 끝나면 아래 라인 주석처리한 뒤, 아래 문서 내용을 비우면 됨
