@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  no-changes:
+  not-changes:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +17,8 @@ jobs:
 
   # This name is used by status check requirement
   before-cd-test:
-    if: ${{ needs.no-changes.outputs.backupbot == 'true' }}
+    needs: not-changes
+    if: ${{ needs.not-changes.outputs.backupbot == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
