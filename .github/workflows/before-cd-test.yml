@@ -19,7 +19,7 @@ jobs:
 
   # This name is used by status check requirement
   before-cd-test:
-    needs: not-changes
+    needs: changes-other-than
     if: ${{ needs.changes-other-than.outputs.backupbot == 'true' }}
     runs-on: ubuntu-22.04
     steps:
