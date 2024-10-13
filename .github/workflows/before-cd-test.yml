@@ -5,20 +5,22 @@ on:
   pull_request:
 
 jobs:
-  not-changes:
+  changes-other-than:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
+        id: filter
         with:
           filters: |
             backupbot:
               - '!**/backupbot.*'
+    outputs:
+      backupbot: ${{ steps.filter.outputs.backupbot }}
 
   # This name is used by status check requirement
   before-cd-test:
     needs: not-changes
-    if: ${{ needs.not-changes.outputs.backupbot == 'true' }}
+    if: ${{ needs.changes-other-than.outputs.backupbot == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
