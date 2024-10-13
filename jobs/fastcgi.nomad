@@ -100,6 +100,18 @@ job "fastcgi" {
         options { checksum = "md5:fa11e91ebb96995b117b9a7408c3f315" }
       }
 
+      artifact {
+        source      = "https://github.com/wikimedia/operations-docker-images-production-images/raw/ad68c7cb62e4e01436ab3a34fb961fe8034c2cce/images/php/common/fpm/live-test/AdoyFastCgiClient.php"
+        destination = "local/AdoyFastCgiClient.php"
+        mode        = "file"
+      }
+
+      artifact {
+        source      = "https://github.com/wikimedia/operations-docker-images-production-images/raw/ad68c7cb62e4e01436ab3a34fb961fe8034c2cce/images/php/common/fpm/live-test/fcgi-probe.php"
+        destination = "local/fcgi-probe.php"
+        mode        = "file"
+      }
+
       template {
         data        = var.hotfix
         destination = "local/Hotfix.php"
@@ -126,6 +138,8 @@ job "fastcgi" {
           "local/php.ini:/usr/local/etc/php/php.ini",
           "local/php-fpm.conf:/usr/local/etc/php-fpm.conf",
           "local/www.conf:/usr/local/etc/php-fpm.d/www.conf",
+          "local/AdoyFastCgiClient.php:/srv/fcgi-check/AdoyFastCgiClient.php",
+          "local/fcgi-probe.php:/srv/fcgi-check/fcgi-probe.php",
           "secrets/secrets.php:/a/secret.php",
           "secrets/analytics-credentials-file.json:/a/analytics-credentials-file.json",
           # Overwrite the default Hotfix.php provided by femiwiki/mediawiki
@@ -159,36 +173,34 @@ job "fastcgi" {
       }
 
       env {
+        # Used by fcgi-probe.php
+        FCGI_URL = "127.0.0.1:9000"
+
         MEDIAWIKI_SKIP_INSTALL      = "1"
         MEDIAWIKI_SKIP_IMPORT_SITES = "1"
         MEDIAWIKI_SKIP_UPDATE       = "1"
-
-        WG_DB_SERVER   = NOMAD_UPSTREAM_ADDR_mysql
-        WG_DB_USER     = "mediawiki"
-        WG_DB_PASSWORD = var.mysql_password_mediawiki
+        WG_DB_SERVER                = NOMAD_UPSTREAM_ADDR_mysql
+        WG_DB_USER                  = "mediawiki"
+        WG_DB_PASSWORD              = var.mysql_password_mediawiki
       }
     }
 
     service {
       name = "fastcgi"
       port = "9000"
-
       connect {
         sidecar_service {
           proxy {
-
             upstreams {
               destination_name = "mysql"
               local_bind_port  = 3306
             }
-
             upstreams {
               destination_name = "memcached"
               local_bind_port  = 11211
             }
           }
         }
-
         sidecar_task {
           config {
             memory_hard_limit = 70
@@ -197,6 +209,15 @@ job "fastcgi" {
             memory = 50
           }
         }
+      }
+      check {
+        # readiness
+        type     = "script"
+        task     = "fastcgi"
+        command  = "/usr/local/bin/php"
+        args     = ["/srv/fcgi-check/fcgi-probe.php"]
+        interval = "10s"
+        timeout  = "1s"
       }
     }
 
