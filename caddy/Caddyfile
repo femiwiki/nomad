@@ -37,6 +37,9 @@ femiwiki.com *.femiwiki.com 127.0.0.1:80 localhost:80 {
 		# Avoid clickjacking
 		X-Frame-Options "DENY"
 	}
+	log {
+		format json
+	}
 
 	rewrite /w/api.php /api.php
 	rewrite /w/* /index.php
