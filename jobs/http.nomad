@@ -28,7 +28,7 @@ job "http" {
         source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
         destination = "local/Caddyfile.tpl"
         mode        = "file"
-        options { checksum = "md5:2a1ec2a963336735ef480843e54fb205" }
+        options { checksum = "md5:9d57fb57bdb833f3f3b47f3624176a46" }
       }
       template {
         source      = "local/Caddyfile.tpl"
