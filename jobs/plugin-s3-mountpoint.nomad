@@ -35,7 +35,8 @@ job "aws_mountpoint_s3_csi_driver" {
       }
 
       env {
-        PTMX_PATH = "/host/dev/ptmx"
+        PTMX_PATH     = "/host/dev/ptmx"
+        CSI_NODE_NAME = node.unique.id
       }
     }
 
