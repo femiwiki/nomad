@@ -7,28 +7,14 @@ job "http" {
   }
 
   group "http" {
-    volume "caddycerts" {
-      type            = "csi"
-      source          = "caddycerts_green"
-      read_only       = false
-      access_mode     = "single-node-writer"
-      attachment_mode = "file-system"
-    }
-
     task "http" {
       driver = "docker"
-
-      volume_mount {
-        volume      = "caddycerts"
-        destination = "/etc/caddycerts"
-        read_only   = false
-      }
 
       artifact {
         source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
         destination = "local/Caddyfile.tpl"
         mode        = "file"
-        options { checksum = "md5:9d57fb57bdb833f3f3b47f3624176a46" }
+        options { checksum = "md5:6715c2b3b983a0708c3ad960323ea63b" }
       }
       template {
         source      = "local/Caddyfile.tpl"
@@ -49,7 +35,7 @@ job "http" {
       }
 
       config {
-        image   = "ghcr.io/femiwiki/femiwiki:2024-06-30T00-53-34439279"
+        image   = "ghcr.io/femiwiki/femiwiki:2025-01-27T13-08-cf06d12a"
         command = "caddy"
         args    = ["run"]
 
@@ -80,8 +66,11 @@ job "http" {
       }
 
       env {
-        CADDYPATH    = "/etc/caddycerts"
-        FASTCGI_ADDR = NOMAD_UPSTREAM_ADDR_fastcgi
+        FASTCGI_ADDR        = NOMAD_UPSTREAM_ADDR_fastcgi
+        S3_USE_IAM_PROVIDER = true
+        S3_HOST             = "s3.ap-northeast-1.amazonaws.com"
+        S3_BUCKET           = "femiwiki-secrets"
+        S3_PREFIX           = "caddycerts"
       }
 
     }

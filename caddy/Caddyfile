@@ -1,8 +1,6 @@
 {
 	# Global options
-	storage file_system {
-		root /etc/caddycerts
-	}
+	storage s3
 
 	order mwcache before rewrite
 	# NOTE: See @filter for the further details
