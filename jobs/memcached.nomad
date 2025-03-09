@@ -10,7 +10,8 @@ job "memcached" {
       }
 
       resources {
-        memory = 80
+        memory     = 90
+        memory_max = 110
       }
     }
 
