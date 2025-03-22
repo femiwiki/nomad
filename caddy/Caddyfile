@@ -16,7 +16,7 @@ femiwiki.com *.femiwiki.com 127.0.0.1:80 localhost:80 {
 	encode gzip
 	mwcache {
 		ristretto {
-			num_counters 30000
+			num_counters 20000
 			max_cost 10000
 			buffer_items 64
 		}

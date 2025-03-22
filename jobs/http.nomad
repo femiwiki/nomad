@@ -14,7 +14,7 @@ job "http" {
         source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
         destination = "local/Caddyfile.tpl"
         mode        = "file"
-        options { checksum = "md5:6715c2b3b983a0708c3ad960323ea63b" }
+        options { checksum = "md5:3898f8a9e8b3e1e2190ee4d62146b9a7" }
       }
       template {
         source      = "local/Caddyfile.tpl"
@@ -61,8 +61,8 @@ job "http" {
       }
 
       resources {
-        memory     = 110
-        memory_max = 130
+        memory     = 120
+        memory_max = 140
       }
 
       env {
