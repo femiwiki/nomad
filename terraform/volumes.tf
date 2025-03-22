@@ -28,16 +28,3 @@ resource "nomad_csi_volume_registration" "mysql_green" {
     attachment_mode = "file-system"
   }
 }
-
-resource "nomad_csi_volume_registration" "caddycerts_green" {
-  provider    = nomad.green
-  plugin_id   = "aws-ebs0"
-  volume_id   = "caddycerts_green"
-  name        = "caddycerts_green"
-  external_id = data.terraform_remote_state.aws.outputs.ebs_caddycerts_green_id
-
-  capability {
-    access_mode     = "single-node-writer"
-    attachment_mode = "file-system"
-  }
-}

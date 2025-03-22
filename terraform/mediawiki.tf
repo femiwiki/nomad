@@ -44,13 +44,8 @@ resource "nomad_job" "fastcgi_green" {
 
 resource "nomad_job" "http_green" {
   provider = nomad.green
-  # TODO Replace EBS CSI with S3 CSI or something
-  depends_on = [
-    nomad_csi_volume_registration.caddycerts_green,
-  ]
-
-  jobspec = file("../jobs/http.nomad")
-  detach  = false
+  jobspec  = file("../jobs/http.nomad")
+  detach   = false
 
   hcl2 {
     allow_fs = true
