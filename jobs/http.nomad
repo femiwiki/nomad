@@ -14,7 +14,7 @@ job "http" {
         source      = "https://github.com/femiwiki/nomad/raw/main/caddy/Caddyfile"
         destination = "local/Caddyfile.tpl"
         mode        = "file"
-        options { checksum = "md5:3898f8a9e8b3e1e2190ee4d62146b9a7" }
+        options { checksum = "md5:ccf8e4159b5a7d532b4f5233391562a9" }
       }
       template {
         source      = "local/Caddyfile.tpl"
@@ -90,6 +90,15 @@ job "http" {
     service {
       name = "http"
       port = "80"
+
+      check {
+        type     = "script"
+        task     = "http"
+        command  = "curl"
+        args     = ["127.0.0.1/health-check"]
+        interval = "5s"
+        timeout  = "2s"
+      }
 
       connect {
         sidecar_service {
