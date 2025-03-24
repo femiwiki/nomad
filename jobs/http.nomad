@@ -61,8 +61,8 @@ job "http" {
       }
 
       resources {
-        memory     = 120
-        memory_max = 140
+        memory     = 130
+        memory_max = 150
       }
 
       env {
