@@ -42,6 +42,8 @@ femiwiki.com *.femiwiki.com 127.0.0.1:80 localhost:80 {
 	rewrite /w/api.php /api.php
 	rewrite /w/* /index.php
 
+	respond /health-check 200
+
 	# Ignore malformed requests
 	@filter0 {
 		path /w/특수:내언어/페미위키:대문
