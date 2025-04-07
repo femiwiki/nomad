@@ -67,6 +67,7 @@ job "http" {
 
       env {
         FASTCGI_ADDR        = NOMAD_UPSTREAM_ADDR_fastcgi
+        AWS_REGION          = "ap-northeast-1"
         S3_USE_IAM_PROVIDER = true
         S3_HOST             = "s3.ap-northeast-1.amazonaws.com"
         S3_BUCKET           = "femiwiki-secrets"
