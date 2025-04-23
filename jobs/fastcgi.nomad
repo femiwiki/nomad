@@ -178,7 +178,7 @@ job "fastcgi" {
 
         MEDIAWIKI_SKIP_INSTALL      = "1"
         MEDIAWIKI_SKIP_IMPORT_SITES = "1"
-        MEDIAWIKI_SKIP_UPDATE       = "1"
+        MEDIAWIKI_SKIP_UPDATE       = "0"
         WG_DB_SERVER                = NOMAD_UPSTREAM_ADDR_mysql
         WG_DB_USER                  = "mediawiki"
         WG_DB_PASSWORD              = var.mysql_password_mediawiki
